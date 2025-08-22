@@ -22,9 +22,8 @@ Latest stable version: [👉 Go to Releases](https://github.com/kamalc0des/pomod
 
 | Platform   | Download |
 |------------|----------|
-| 🍎 macOS   | [`.dmg`](https://github.com/kamalc0des/pomodoro-minutor/releases/latest/download/Pomodoro%20Minutor.dmg) |
-| 🪟 Windows | [`.exe`](https://github.com/kamalc0des/pomodoro-minutor/releases/latest/download/Pomodoro%20Minutor.exe) |
-| 🐧 Linux   | [`.AppImage`](https://github.com/kamalc0des/pomodoro-minutor/releases/latest/download/Pomodoro%20Minutor.AppImage) |
+| 🍎 macOS   | ✅ |
+| 🪟 Windows | ✅ |
 
 ---
 
