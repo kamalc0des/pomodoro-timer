@@ -16,17 +16,6 @@ Cross-platform (macOS, Windows, Linux) with a clean and minimal UI.
 
 ---
 
-## 🚀 Download
-
-Latest stable version: [👉 Go to Releases](https://github.com/kamalc0des/pomodoro-minutor/releases/latest)
-
-| Platform   | Download |
-|------------|----------|
-| 🍎 macOS   | ✅ |
-| 🪟 Windows | ✅ |
-
----
-
 ## 🚀 Installation
 
 Clone the repo and install dependencies:
