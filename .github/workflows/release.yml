@@ -68,6 +68,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.version.outputs.tag }}
-          files: release/**/*   # Attach all installers.
+          files: release/**/*
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
