@@ -19,15 +19,14 @@ import { byId } from"../utils/dom.js";
     if (storedPseudo && storedAvatar) {
       welcomeDiv.innerHTML = `
         <img src="${storedAvatar}" class="w-16 h-16 rounded-full mx-auto mb-2" alt="Avatar" />
-        <h2 class="text-xl font-bold">Bienvenue, ${storedPseudo} !</h2>
+        <h2 class="text-xl font-bold">Welcome back, ${storedPseudo} !</h2>
       `;
     } else {
-      welcomeDiv.innerHTML = `<h2 class="text-xl font-bold">Bienvenue sur Pomodoro Minutor !</h2>`;
+      welcomeDiv.innerHTML = `<h2 class="text-xl font-bold">Welcome on Pomodoro Minutor !</h2>`;
     }
   }
 
   startBtn.addEventListener("click", () => {
-    console.log("[index] Bouton Commencer cliqué !");
     startBtn.textContent = "Loading..."; // visual proof
     try {
       if (!storedPseudo || !storedAvatar) {

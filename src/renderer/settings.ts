@@ -1,6 +1,7 @@
 import { byId } from "../utils/dom.js";
 import { storage } from "../utils/storage.js";
 
+
 if (!window._electronApiDeclared) {
   window._electronApiDeclared = true;
 }
@@ -17,7 +18,7 @@ if (!form) {
   if (durationInput) durationInput.value = String(storage.getNumber("duration", 25));
   if (cyclesInput) cyclesInput.value = String(storage.getNumber("cycles", 4));
 
-  form.onsubmit = (e: SubmitEvent) => {
+  form.onsubmit = async (e: SubmitEvent) => {
     e.preventDefault();
 
     const newDuration = parseInt(durationInput?.value ?? "0", 10);
@@ -26,13 +27,18 @@ if (!form) {
     if (newDuration > 0 && newCycles > 0) {
       storage.set("duration", newDuration);
       storage.set("cycles", newCycles);
-      if (msg) msg.textContent = "Réglages enregistrés !";
+      if (msg) { 
+        msg.textContent = "Settings saved ! Redirection...";
+        await new Promise(res => setTimeout(res, 2000));
+        window.electronAPI.navigate("timer.html");
+      } 
     } else if (msg) {
-      msg.textContent = "Valeurs invalides.";
+      msg.textContent = "Invalid values";
     }
   };
 
-  backBtn?.addEventListener("click", () => {
+  backBtn?.addEventListener("click", async () => {
+    // await new Promise(res => setTimeout(res, 2000));
     window.electronAPI.navigate("timer.html");
   });
 }

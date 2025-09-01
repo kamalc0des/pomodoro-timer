@@ -19,7 +19,7 @@ if (!form) {
     const file: File | undefined = avatarInput?.files?.[0];
 
     if (!pseudo || !file) {
-      if (errorDiv) errorDiv.textContent = "Pseudo et photo requis.";
+      if (errorDiv) errorDiv.textContent = "Pseudo and profile picture needed.";
       return;
     }
 
@@ -31,7 +31,7 @@ if (!form) {
         localStorage.setItem("avatar", result);
         window.electronAPI.navigate("timer.html");
       } else if (errorDiv) {
-        errorDiv.textContent = "Impossible de lire le fichier image.";
+        errorDiv.textContent = "Impossible to read the file, please retry.";
       }
     };
     reader.readAsDataURL(file);

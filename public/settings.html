@@ -2,29 +2,32 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Réglages Pomodoro</title>
+  <title>Pomodoro Settings</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-orange-50 min-h-screen flex flex-col items-center justify-center">
-  <h2 class="text-xl font-bold mb-4">Réglages Pomodoro</h2>
+  <h2 class="text-xl font-bold mb-4">Pomodoro settings</h2>
   <form id="settingsForm" class="flex flex-col items-center gap-3 w-full max-w-xs">
     <label class="w-full flex flex-col items-start">
-      <span class="mb-1">Durée du minuteur (minutes):</span>
+      <span class="mb-1">Timer duration (minutes):</span>
       <input type="number" id="duration" min="1" max="60"
         class="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:border-orange-400" />
     </label>
     <label class="w-full flex flex-col items-start">
-      <span class="mb-1">Nombre de cycles:</span>
+      <span class="mb-1">Number of cycles:</span>
       <input type="number" id="cycles" min="1" max="12"
         class="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:border-orange-400" />
     </label>
-    <button type="submit" class="bg-orange-500 hover:bg-orange-700 text-white font-semibold py-2 px-6 rounded shadow">
-      Enregistrer
-    </button>
+    <div class="flex gap-4">
+      <button type="submit" class="bg-orange-500 hover:bg-orange-700 text-white font-semibold py-2 px-6 rounded shadow">
+        Save
+      </button>
+      <button id="backBtn" class="bg-orange-200 hover:bg-orange-300 text-orange-700 font-semibold py-2 px-6 rounded shadow">
+        Go back
+      </button>
+    </div>
   </form>
-  <button id="backBtn" class="mt-4 bg-orange-200 hover:bg-orange-300 text-orange-700 font-semibold py-2 px-6 rounded shadow">
-    Retour
-  </button>
+
   <div id="settingsMsg" class="text-green-600 mt-2"></div>
   <script type="module" src="../dist/src/renderer/settings.js"></script>
 </body>

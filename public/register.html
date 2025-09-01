@@ -2,19 +2,19 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Enregistrement</title>
+  <title>Register</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-orange-50 min-h-screen flex flex-col items-center justify-center">
-  <h2 class="text-2xl font-bold mb-2">Bienvenue !</h2>
-  <p class="mb-4 text-gray-700">Enregistre ton pseudo et ta photo de profil</p>
+  <h2 class="text-2xl font-bold mb-2">Welcome!</h2>
+  <p class="mb-4 text-gray-700">Register your profile picture and pseudo</p>
   <form id="registerForm" class="flex flex-col items-center gap-3 w-full max-w-xs">
     <input type="text" id="pseudo" placeholder="Pseudo" required
       class="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:border-orange-400" />
     <input type="file" id="avatar" accept="image/*" required
       class="w-full" />
     <button type="submit" class="bg-orange-500 hover:bg-orange-700 text-white font-semibold py-2 px-6 rounded shadow">
-      Enregistrer
+      Save
     </button>
   </form>
   <div id="error" class="text-red-600 mt-2"></div>

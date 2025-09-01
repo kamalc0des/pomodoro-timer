@@ -41,7 +41,7 @@ import { storage } from "../utils/storage.js";
   function updateTitle() {
     const min = Math.floor(timeLeft / 60);
     const sec = timeLeft % 60;
-    const phase = isBreak ? "Pause" : "Travail";
+    const phase = isBreak ? "Pause" : "Work";
     document.title = `${fmt(min)}:${fmt(sec)} • ${phase}`;
   }
 
@@ -50,7 +50,7 @@ import { storage } from "../utils/storage.js";
     const sec = timeLeft % 60;
     timerEl.textContent = `${fmt(min)}:${fmt(sec)}`;
     if (cycleInfo) {
-      cycleInfo.textContent = `Cycle ${currentCycle} / ${cycles} ${isBreak ? "(Pause)" : "(Travail)"}`;
+      cycleInfo.textContent = `Cycle ${currentCycle} / ${cycles} ${isBreak ? "(Pause)" : "(Work)"}`;
     }
     updateTitle();
   }
