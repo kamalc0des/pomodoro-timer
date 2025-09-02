@@ -1,4 +1,4 @@
-# ⏳ Pomodoro Minutor
+# ⏳ Pomodoro Timer
 
 A simple **Pomodoro timer** built with **Electron** and **Tailwind CSS**.  
 Cross-platform (macOS, Windows, Linux) with a clean and minimal UI.
@@ -43,7 +43,7 @@ The executables will be available in the **`release/`** folder.
 ## 📂 Project Structure
 
 ```
-pomodoro-minutor/
+pomodoro-timer/
 ├── dist/                # Compiled files
 ├── public/              # HTML, CSS, icons
 ├── src/
