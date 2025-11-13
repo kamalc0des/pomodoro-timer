@@ -2,6 +2,7 @@
   "name": "pomodoro-minutor",
   "version": "1.0.0",
   "description": "A simple Pomodoro timer built with Electron and Tailwind CSS",
+  "icon": "assets/icons/icon",
   "main": "dist/electron/main.js",
   "scripts": {
     "build": "tsc -p tsconfig.main.json && tsc -p tsconfig.renderer.json",
@@ -31,6 +32,13 @@
       "public/**/*",
       "package.json"
     ],
+    "extraResources": [
+      {
+        "from": "assets",
+        "to": "assets"
+      }
+    ],
+    "icon": "assets/icons/icon.png",
     "mac": {
       "target": "dmg"
     },

@@ -17,6 +17,7 @@ function createWindow(): void {
     resizable: false,
     show: false,
     backgroundColor: "#ffffff",
+    icon: join(__dirname, "icon"),
     webPreferences: {
       preload: join(__dirname, "preload.js"),
       contextIsolation: true,
