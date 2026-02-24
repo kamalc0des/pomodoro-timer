@@ -1,15 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="retro-teal">
+
 <head>
   <meta charset="UTF-8">
-  <title>Pomodoro Home</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Pomodoro</title>
+  <link rel="stylesheet" href="../dist/styles.css">
 </head>
-<body class="bg-orange-50 min-h-screen flex flex-col items-center justify-center">
-  <div id="welcome" class="mb-6"></div>
-  <button id="startBtn" class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-6 rounded shadow">
-    Start
+
+<body class="bg-bg text-fg min-h-screen flex flex-col items-center justify-center px-6">
+
+  <div id="welcome" class="flex flex-col items-center mb-8 text-center"></div>
+
+  <!-- <p class="text-sm text-muted mb-8">Ready to focus?</p> -->
+
+  <button id="startBtn"
+    class="w-full max-w-xs bg-accent text-accentFg font-semibold py-3 px-6 rounded-xl shadow-md hover:opacity-90 transition text-base mb-3">
+    Let's go 😎
   </button>
+
+  <button id="resetAppBtn"
+    class="text-xs text-muted hover:text-red-400 transition-colors duration-200 underline underline-offset-2 cursor-pointer">
+    Delete profile
+  </button>
+
   <script type="module" src="../dist/src/renderer/index.js"></script>
 </body>
+
 </html>

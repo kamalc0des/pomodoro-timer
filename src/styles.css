@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --bg: 18 19 18;
+    --fg: 232 216 201;
+    --surface: 62 104 104;
+    --muted: 181 171 133;
+    --accent: 243 112 30;
+    --accent-fg: 18 19 18;
+    --border: 255 255 255;
+  }
+  
+  /* Theme 1 Retro Teal Orange Cream */
+  [data-theme="retro-teal"] {
+    --bg: 18 19 18;
+    --fg: 232 216 201;
+    --surface: 62 104 104;
+    --muted: 193 171 133;
+    --accent: 243 112 30;
+    --accent-fg: 18 19 18;
+    --border: 232 216 201;
+  }
+  
+  /* Theme 2 Teal Coral Sand */
+  [data-theme="coral-teal"] {
+    --bg: 16 18 20;
+    --fg: 236 227 214;
+    --surface: 19 72 87;
+    --muted: 200 184 155;
+    --accent: 201 78 68;
+    --accent-fg: 16 18 20;
+    --border: 236 227 214;
+  }
+  
+  /* Theme 3 Burgundy Teal Gold */
+  [data-theme="burgundy-gold"] {
+    --bg: 10 10 12;
+    --fg: 238 224 204;
+    --surface: 19 72 87;
+    --muted: 207 183 135;
+    --accent: 129 2 31;
+    --accent-fg: 238 224 204;
+    --border: 207 183 135;
+  }
+  
+  /* Theme 4 Slate Blue Orange */
+  [data-theme="slate-orange"] {
+    --bg: 12 17 28;
+    --fg: 232 216 201;
+    --surface: 75 96 127;
+    --muted: 193 171 133;
+    --accent: 243 112 30;
+    --accent-fg: 12 17 28;
+    --border: 232 216 201;
+  }
+  

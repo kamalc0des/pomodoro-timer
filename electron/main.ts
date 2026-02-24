@@ -12,8 +12,8 @@ function htmlPath(page: string) {
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
-    width: 350,
-    height: 350,
+    width: 400,
+    height: 400,
     resizable: false,
     show: false,
     backgroundColor: "#ffffff",

@@ -6,6 +6,10 @@ import { storage } from "../utils/storage.js";
     window._electronApiDeclared = true;
   }
 
+  // Get the theme and apply it
+  const savedTheme = localStorage.getItem("theme") ?? "retro-teal";
+  document.documentElement.dataset.theme = savedTheme;
+
   // 1) Grab the element, guard, then rebind as non-null
   const el = byId<HTMLDivElement>("timer");
   if (!el) return; // not on timer page
@@ -20,7 +24,7 @@ import { storage } from "../utils/storage.js";
 
   const pseudo = localStorage.getItem("pseudo") ?? "";
   const avatar = localStorage.getItem("avatar") ?? "";
-  if (userInfo) userInfo.textContent = pseudo ? `👤 ${pseudo}` : "";
+  if (userInfo) userInfo.textContent = pseudo ? `${pseudo}` : "";
   if (profilePic) profilePic.src = avatar;
 
   // Parameters

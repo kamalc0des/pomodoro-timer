@@ -4,6 +4,10 @@ if (!window._electronApiDeclared) {
   window._electronApiDeclared = true;
 }
 
+// Get the theme and apply it
+const savedTheme = localStorage.getItem("theme") ?? "retro-teal";
+document.documentElement.dataset.theme = savedTheme;
+
 const form = byId<HTMLFormElement>("registerForm");
 if (!form) {
   // Do nothing
