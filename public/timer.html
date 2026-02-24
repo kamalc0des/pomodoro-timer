@@ -1,26 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="retro-teal">
+
 <head>
   <meta charset="UTF-8">
   <title>Timer Pomodoro</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../dist/styles.css">
 </head>
-<body class="bg-orange-50 min-h-screen flex flex-col items-center justify-center">
-  <h2 id="userInfo" class="text-lg font-semibold mb-2"></h2>
-  <img id="profilePic" class="w-16 h-16 rounded-full mb-4" />
-  <div id="timer" class="text-5xl font-mono mb-8">25:00</div>
-  <div id="cycleInfo" class="mb-2"></div>
-  <div class="flex gap-4">
-    <button id="startPauseBtn" class="bg-orange-500 hover:bg-orange-700 text-white font-semibold py-2 px-5 rounded shadow">
-      Start
-    </button>
-    <button id="resetBtn" class="bg-orange-400 hover:bg-orange-600 text-white font-semibold py-2 px-5 rounded shadow">
-      Reset
-    </button>
-    <button id="settingsBtn" class="bg-white border border-orange-400 text-orange-600 font-semibold py-2 px-4 rounded shadow hover:bg-orange-100">
-      ⚙️ Settings
-    </button>
+
+<body class="bg-bg text-fg min-h-screen flex flex-col p-4">
+
+  <div class="fixed top-0 left-0 right-0 flex justify-between items-center p-4 bg-bg z-10">
+    <div class="flex flex-row items-center gap-3">
+      <img id="profilePic" class="w-12 h-12 rounded-full border border-border/30" />
+      <div>
+        <h2 id="userInfo" class="text-sm font-semibold text-fg"></h2>
+      </div>
+    </div>
+    <div>
+      <button id="settingsBtn"
+        class="bg-bg/40 border border-border/20 text-xl font-semibold py-2.5 px-3 rounded-lg shadow-md hover:bg-bg/60 transition">
+        ⚙️
+      </button>
+    </div>
   </div>
+
+  <div class="flex flex-col items-center justify-center flex-1 pt-20">
+    <div class="flex flex-col items-center justify-center mb-8">
+      <div id="timer" class="text-6xl font-mono tracking-tight text-fg">
+        25:00
+      </div>
+      <div id="cycleInfo" class="text-xs text-muted"></div>
+    </div>
+
+    <div class="flex flex-wrap gap-3 justify-center">
+      <button id="startPauseBtn"
+        class="bg-accent text-accentFg font-semibold py-2.5 px-6 rounded-lg shadow-md hover:opacity-90 transition">
+        Start
+      </button>
+      <button id="resetBtn"
+        class="bg-surface/40 border border-border/20 text-fg font-semibold py-2.5 px-6 rounded-lg shadow-md hover:bg-surface/55 transition">
+        Reset
+      </button>
+    </div>
+  </div>
+
+  <footer class="mt-auto flex justify-center pb-3">
+    <a class="text-xs text-muted hover:text-accent transition-colors duration-200 cursor-pointer"
+      href="https://kamalcodes.dev">
+      Support me and visit my portfolio: @kamalcodes</a>
+  </footer>
+
   <script type="module" src="../dist/src/renderer/timer.js"></script>
 </body>
+
 </html>
