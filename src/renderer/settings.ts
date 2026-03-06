@@ -31,6 +31,15 @@ function highlightActive(theme: string) {
   });
 }
 
+// Reset app data
+const resetAppBtnSettings = byId<HTMLButtonElement>("resetAppBtnSettings");
+resetAppBtnSettings?.addEventListener("click", () => {
+  localStorage.clear();
+  location.reload();
+  window.electronAPI.navigate("index.html");
+});
+
+
 // Settings form
 const form = byId<HTMLFormElement>("settingsForm");
 if (!form) {
@@ -99,4 +108,6 @@ if (!form) {
   backBtn?.addEventListener("click", async () => {
     window.electronAPI.navigate("timer.html");
   });
+
+
 }

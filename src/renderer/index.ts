@@ -1,12 +1,18 @@
-import { byId } from"../utils/dom.js"; 
+import { byId } from "../utils/dom.js";
 
 (function initIndexPage() {
   if (!window._electronApiDeclared) window._electronApiDeclared = true;
 
-  console.log("[index] script loaded"); // sanity check
+  console.log("[index] script loaded");
 
   const startBtn = byId<HTMLButtonElement>("startBtn");
   const resetAppBtn = byId<HTMLButtonElement>("resetAppBtn");
+  const welcomeDiv = byId<HTMLDivElement>("welcome");
+
+  // Get the profil and check if the user is logged in
+  const storedPseudo = localStorage.getItem("pseudo");
+  const storedAvatar = localStorage.getItem("avatar");
+  const isLoggedIn = !!(storedPseudo && storedAvatar);
 
   if (!startBtn) {
     console.warn("[index] #startBtn not found");
@@ -18,12 +24,11 @@ import { byId } from"../utils/dom.js";
     return;
   }
 
-  const welcomeDiv = byId<HTMLDivElement>("welcome");
-  const storedPseudo = localStorage.getItem("pseudo");
-  const storedAvatar = localStorage.getItem("avatar");
+  // Show reset button only if logged in
+  resetAppBtn.style.display = isLoggedIn ? "block" : "none";
 
-  if(welcomeDiv) {
-    if (storedPseudo && storedAvatar) {
+  if (welcomeDiv) {
+    if (isLoggedIn) {
       welcomeDiv.innerHTML = `
         <img src="${storedAvatar}" class="w-20 h-20 rounded-full mb-3 shadow-lg border-2 border-accent" alt="Avatar" />
         <h2 class="text-xl font-bold">Welcome back, ${storedPseudo} !</h2>
@@ -37,19 +42,17 @@ import { byId } from"../utils/dom.js";
     }
   }
 
+  // Navigate to timer or register page on start
   startBtn.addEventListener("click", () => {
-    startBtn.textContent = "Loading..."; // visual proof
+    startBtn.textContent = "Loading...";
     try {
-      if (!storedPseudo || !storedAvatar) {
-        window.electronAPI?.navigate("register.html");
-      } else {
-        window.electronAPI?.navigate("timer.html");
-      }
+      window.electronAPI?.navigate(isLoggedIn ? "timer.html" : "register.html");
     } catch (err) {
       console.error("[index] navigate error:", err);
     }
   });
 
+  // Reset app data
   resetAppBtn.addEventListener("click", () => {
     localStorage.clear();
     location.reload();
