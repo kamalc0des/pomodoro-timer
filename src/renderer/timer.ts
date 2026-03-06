@@ -6,14 +6,12 @@ import { storage } from "../utils/storage.js";
     window._electronApiDeclared = true;
   }
 
-  // Get the theme and apply it
   const savedTheme = localStorage.getItem("theme") ?? "retro-teal";
   document.documentElement.dataset.theme = savedTheme;
 
-  // 1) Grab the element, guard, then rebind as non-null
   const el = byId<HTMLDivElement>("timer");
-  if (!el) return; // not on timer page
-  const timerEl: HTMLDivElement = el; // <-- permanently non-null from here
+  if (!el) return;
+  const timerEl: HTMLDivElement = el;
 
   const userInfo = byId<HTMLSpanElement>("userInfo");
   const profilePic = byId<HTMLImageElement>("profilePic");
@@ -27,9 +25,8 @@ import { storage } from "../utils/storage.js";
   if (userInfo) userInfo.textContent = pseudo ? `${pseudo}` : "";
   if (profilePic) profilePic.src = avatar;
 
-  // Parameters
-  let duration = storage.getNumber("duration", 25);          // minutes work
-  let breakDuration = storage.getNumber("breakDuration", 5); // minutes break
+  let duration = storage.getNumber("duration", 25);
+  let breakDuration = storage.getNumber("breakDuration", 5);
   let cycles = storage.getNumber("cycles", 4);
 
   let currentCycle = 1;
@@ -38,9 +35,12 @@ import { storage } from "../utils/storage.js";
   let timerInterval: ReturnType<typeof setInterval> | null = null;
   let isRunning = false;
 
-  const dingSound = new Audio("assets/ding.mp3");
-
   const fmt = (n: number) => String(n).padStart(2, "0");
+
+  function playSound(file: string) {
+    const sound = new Audio(`sounds/${file}`);
+    void sound.play().catch((err) => console.error("play error:", err));
+  }
 
   function updateTitle() {
     const min = Math.floor(timeLeft / 60);
@@ -67,7 +67,7 @@ import { storage } from "../utils/storage.js";
   }
 
   function startTimer() {
-    if (timerInterval) return; // prevent double interval
+    if (timerInterval) return;
 
     timerInterval = setInterval(() => {
       if (timeLeft > 0) {
@@ -83,9 +83,8 @@ import { storage } from "../utils/storage.js";
         // Work -> Break
         isBreak = true;
         timeLeft = breakDuration * 60;
-        timerEl.textContent = "Pause !";
-        void dingSound.play().catch(() => void 0);
-
+        playSound("end.wav");
+      
         setTimeout(() => {
           updateDisplay();
           startTimer();
@@ -96,14 +95,16 @@ import { storage } from "../utils/storage.js";
         // Break -> Work or End
         isBreak = false;
         currentCycle++;
+
         if (currentCycle > cycles) {
-          timerEl.textContent = "Pomodoro terminé !";
+          timerEl.textContent = "Pomodoro finished!";
           if (startPauseBtn) startPauseBtn.textContent = "Start";
-          void dingSound.play().catch(() => void 0);
+          playSound("end.wav");
           updateTitle();
         } else {
           timeLeft = duration * 60;
-          timerEl.textContent = "Go !";
+          timerEl.textContent = "Go!";
+          playSound("start.wav");
           setTimeout(() => {
             updateDisplay();
             startTimer();
@@ -125,6 +126,7 @@ import { storage } from "../utils/storage.js";
       if (startPauseBtn) startPauseBtn.textContent = "Start";
       updateTitle();
     } else {
+      playSound("start.wav");
       startTimer();
     }
   });
@@ -134,7 +136,6 @@ import { storage } from "../utils/storage.js";
     duration = storage.getNumber("duration", 25);
     breakDuration = storage.getNumber("breakDuration", 5);
     cycles = storage.getNumber("cycles", 4);
-
     isBreak = false;
     currentCycle = 1;
     timeLeft = duration * 60;
