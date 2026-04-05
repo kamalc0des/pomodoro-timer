@@ -26,7 +26,7 @@ import { storage } from "../utils/storage.js";
   if (profilePic) profilePic.src = avatar;
 
   let duration = storage.getNumber("duration", 25);
-  let breakDuration = storage.getNumber("breakDuration", 5);
+  let breakDuration = storage.getNumber("breakDuration", 0.1); // keep it on 5min
   let cycles = storage.getNumber("cycles", 4);
 
   let currentCycle = 1;
@@ -37,6 +37,10 @@ import { storage } from "../utils/storage.js";
 
   const fmt = (n: number) => String(n).padStart(2, "0");
 
+  function notify(title: string, body: string) {
+    window.electronAPI.notify(title, body);
+  }
+
   function playSound(file: string) {
     const sound = new Audio(`sounds/${file}`);
     void sound.play().catch((err) => console.error("play error:", err));
@@ -45,7 +49,7 @@ import { storage } from "../utils/storage.js";
   function updateTitle() {
     const min = Math.floor(timeLeft / 60);
     const sec = timeLeft % 60;
-    const phase = isBreak ? "Pause" : "Work";
+    const phase = isBreak ? "Break" : "Work";
     document.title = `${fmt(min)}:${fmt(sec)} • ${phase}`;
   }
 
@@ -54,7 +58,7 @@ import { storage } from "../utils/storage.js";
     const sec = timeLeft % 60;
     timerEl.textContent = `${fmt(min)}:${fmt(sec)}`;
     if (cycleInfo) {
-      cycleInfo.textContent = `Cycle ${currentCycle} / ${cycles} ${isBreak ? "(Pause)" : "(Work)"}`;
+      cycleInfo.textContent = `Cycle ${currentCycle} / ${cycles} ${isBreak ? "(Break)" : "(Work)"}`;
     }
     updateTitle();
   }
@@ -84,39 +88,46 @@ import { storage } from "../utils/storage.js";
         isBreak = true;
         timeLeft = breakDuration * 60;
         playSound("end.wav");
-      
+        notify("⏸ Break time!", `Good job ${pseudo}! Take a ${breakDuration} min break.`);
+
         setTimeout(() => {
           updateDisplay();
           startTimer();
           isRunning = true;
-          if (startPauseBtn) startPauseBtn.textContent = "Pause";
+          if (startPauseBtn) startPauseBtn.textContent = "Break";
         }, 1000);
+
       } else {
         // Break -> Work or End
         isBreak = false;
         currentCycle++;
 
         if (currentCycle > cycles) {
-          timerEl.textContent = "Pomodoro finished!";
+          // timerEl.textContent = "Pomodoro finished! 🍅";
+          timeLeft = 0;
+          isRunning = false;
           if (startPauseBtn) startPauseBtn.textContent = "Start";
           playSound("end.wav");
+          notify("🍅 Pomodoro done!", `All ${cycles} cycles completed. Well done ${pseudo}!`);
           updateTitle();
+          return;
         } else {
           timeLeft = duration * 60;
-          timerEl.textContent = "Go!";
+          // timerEl.textContent = "Go!";
           playSound("start.wav");
+          notify("▶️ Back to work!", `Cycle ${currentCycle} / ${cycles} — let's focus!`);
           setTimeout(() => {
             updateDisplay();
             startTimer();
             isRunning = true;
-            if (startPauseBtn) startPauseBtn.textContent = "Pause";
+            if (startPauseBtn) startPauseBtn.textContent = "Break";
           }, 1000);
         }
       }
     }, 1000);
 
     isRunning = true;
-    if (startPauseBtn) startPauseBtn.textContent = "Pause";
+    if (startPauseBtn) startPauseBtn.textContent = "Break";
   }
 
   startPauseBtn?.addEventListener("click", () => {
@@ -126,6 +137,13 @@ import { storage } from "../utils/storage.js";
       if (startPauseBtn) startPauseBtn.textContent = "Start";
       updateTitle();
     } else {
+      // Reset to first cycle if we were at the end of the last break
+      if (currentCycle > cycles) {
+        currentCycle = 1;
+        isBreak = false;
+        timeLeft = duration * 60;
+        updateDisplay();
+      }
       playSound("start.wav");
       startTimer();
     }
@@ -134,7 +152,7 @@ import { storage } from "../utils/storage.js";
   resetBtn?.addEventListener("click", () => {
     clearTimer();
     duration = storage.getNumber("duration", 25);
-    breakDuration = storage.getNumber("breakDuration", 5);
+    breakDuration = storage.getNumber("breakDuration", 0.1);
     cycles = storage.getNumber("cycles", 4);
     isBreak = false;
     currentCycle = 1;
