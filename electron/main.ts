@@ -1,6 +1,7 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, Notification } from "electron";
 import { join } from "path";
-import notifier from "node-notifier";
+import { getState, initFromOSLocale, updateState, resetState } from "./store";
+import type { StatePatch } from "../src/types/state";
 
 app.setAppUserModelId("com.pomodoro.minutor");
 
@@ -13,14 +14,25 @@ function htmlPath(page: string) {
     : join(app.getAppPath(), "public", page);
 }
 
+function iconPath() {
+  return isDev
+    ? join(process.cwd(), "assets", "icons", "icon.png")
+    : join(process.resourcesPath, "assets", "icons", "icon.png");
+}
+
+function firstPage(): string {
+  const { profile } = getState();
+  return profile.onboarded ? "index.html" : "onboarding.html";
+}
+
 function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 400,
-    height: 400,
+    height: 600,
     resizable: false,
     show: false,
     backgroundColor: "#ffffff",
-    icon: join(__dirname, "icon"),
+    icon: iconPath(),
     webPreferences: {
       preload: join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -29,7 +41,7 @@ function createWindow(): void {
   });
 
   mainWindow.setMenu(null);
-  void mainWindow.loadFile(htmlPath("index.html"));
+  void mainWindow.loadFile(htmlPath(firstPage()));
   mainWindow.once("ready-to-show", () => mainWindow?.show());
 
   if (isDev) {
@@ -41,6 +53,7 @@ app.whenReady().then(() => {
   if (process.platform === "darwin") {
     app.setAppUserModelId(app.name);
   }
+  initFromOSLocale();
   createWindow();
 });
 
@@ -51,12 +64,30 @@ ipcMain.on("navigate", (_event, page: string) => {
 });
 
 ipcMain.on("notify", (_event, title: string, body: string) => {
-  notifier.notify({
+  const { preferences } = getState();
+  if (!preferences.notificationsEnabled) return;
+  if (!Notification.isSupported()) {
+    console.warn("[notify] Native notifications not supported on this system");
+    return;
+  }
+  const notification = new Notification({
     title,
-    message: body,
-    sound: false,
+    body,
+    icon: iconPath(),
+    silent: false,
   });
+  notification.on("click", () => {
+    if (!mainWindow) return;
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.show();
+    mainWindow.focus();
+  });
+  notification.show();
 });
+
+ipcMain.handle("store:get", () => getState());
+ipcMain.handle("store:update", (_event, patch: StatePatch) => updateState(patch));
+ipcMain.handle("store:reset", () => resetState());
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();

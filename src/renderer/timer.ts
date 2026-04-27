@@ -1,17 +1,39 @@
 import { byId } from "../utils/dom.js";
-import { storage } from "../utils/storage.js";
+import { loadState, patchState } from "../utils/storage.js";
+import {
+  ACHIEVEMENTS,
+  applyPomodoroComplete,
+  ensureDailyMission,
+  getRankInfo,
+  todayKey,
+} from "../utils/progression.js";
+import { applyI18n, getLang, setLang, t } from "../utils/i18n.js";
+import type { AppState } from "../types/state.js";
 
-(function initTimerPage() {
-  if (!window._electronApiDeclared) {
-    window._electronApiDeclared = true;
+(async function initTimerPage() {
+  if (!window._electronApiDeclared) window._electronApiDeclared = true;
+
+  let state: AppState = await loadState();
+
+  if (!state.profile.onboarded) {
+    window.electronAPI.navigate("onboarding.html");
+    return;
   }
 
-  const savedTheme = localStorage.getItem("theme") ?? "retro-teal";
-  document.documentElement.dataset.theme = savedTheme;
+  document.documentElement.dataset.theme = state.preferences.theme;
+  applyI18n();
 
-  const el = byId<HTMLDivElement>("timer");
-  if (!el) return;
-  const timerEl: HTMLDivElement = el;
+  const today = todayKey();
+  const refreshedMission = ensureDailyMission(state, today);
+  if (
+    refreshedMission.date !== state.dailyMission.date ||
+    refreshedMission.target !== state.dailyMission.target
+  ) {
+    state = await patchState({ dailyMission: refreshedMission });
+  }
+
+  const timerEl = byId<HTMLDivElement>("timer");
+  if (!timerEl) return;
 
   const userInfo = byId<HTMLSpanElement>("userInfo");
   const profilePic = byId<HTMLImageElement>("profilePic");
@@ -19,15 +41,20 @@ import { storage } from "../utils/storage.js";
   const startPauseBtn = byId<HTMLButtonElement>("startPauseBtn");
   const resetBtn = byId<HTMLButtonElement>("resetBtn");
   const settingsBtn = byId<HTMLButtonElement>("settingsBtn");
+  const profileBtn = byId<HTMLButtonElement>("profileBtn");
+  const rankLabel = byId<HTMLSpanElement>("rankLabel");
+  const xpLabel = byId<HTMLSpanElement>("xpLabel");
+  const xpFill = byId<HTMLDivElement>("xpFill");
+  const missionLabel = byId<HTMLDivElement>("missionLabel");
+  const langToggle = byId<HTMLButtonElement>("langToggle");
 
-  const pseudo = localStorage.getItem("pseudo") ?? "";
-  const avatar = localStorage.getItem("avatar") ?? "";
-  if (userInfo) userInfo.textContent = pseudo ? `${pseudo}` : "";
-  if (profilePic) profilePic.src = avatar;
+  if (userInfo) userInfo.textContent = state.profile.pseudo;
+  if (profilePic) profilePic.src = state.profile.avatar;
 
-  let duration = storage.getNumber("duration", 25);
-  let breakDuration = storage.getNumber("breakDuration", 0.1); // keep it on 5min
-  let cycles = storage.getNumber("cycles", 4);
+  let duration = state.preferences.duration;
+  let breakDuration = state.preferences.breakDuration;
+  let cycles = state.preferences.cycles;
+  const pseudo = state.profile.pseudo;
 
   let currentCycle = 1;
   let isBreak = false;
@@ -38,6 +65,7 @@ import { storage } from "../utils/storage.js";
   const fmt = (n: number) => String(n).padStart(2, "0");
 
   function notify(title: string, body: string) {
+    if (!state.preferences.notificationsEnabled) return;
     window.electronAPI.notify(title, body);
   }
 
@@ -46,19 +74,57 @@ import { storage } from "../utils/storage.js";
     void sound.play().catch((err) => console.error("play error:", err));
   }
 
+  function refreshLangToggle() {
+    if (langToggle) langToggle.textContent = getLang() === "en" ? "FR" : "EN";
+  }
+
+  function refreshStartPauseLabel() {
+    if (!startPauseBtn) return;
+    startPauseBtn.textContent = isRunning ? t("timer.pause") : t("timer.start");
+  }
+
+  function updateProgressionUI() {
+    const info = getRankInfo(state.progression.xp);
+    if (rankLabel) rankLabel.textContent = `${info.rank.emoji} ${t(`rank.${info.rank.index}`)}`;
+    if (xpLabel) {
+      xpLabel.textContent = info.next
+        ? `${info.xpInRank} / ${info.xpForNext} XP`
+        : `${state.progression.xp} XP`;
+    }
+    if (xpFill) {
+      xpFill.style.width = `${Math.round(info.progress * 100)}%`;
+      xpFill.style.background = info.rank.color;
+    }
+    if (missionLabel) {
+      const m = state.dailyMission;
+      if (m.completed) {
+        missionLabel.textContent = t("timer.mission.done");
+      } else if (m.target > 0) {
+        missionLabel.textContent = t("timer.mission.progress", {
+          progress: m.progress,
+          target: m.target,
+        });
+      } else {
+        missionLabel.textContent = "";
+      }
+    }
+  }
+
   function updateTitle() {
     const min = Math.floor(timeLeft / 60);
     const sec = timeLeft % 60;
-    const phase = isBreak ? "Break" : "Work";
+    const phase = isBreak ? t("timer.phase.break") : t("timer.phase.work");
     document.title = `${fmt(min)}:${fmt(sec)} • ${phase}`;
   }
 
   function updateDisplay() {
     const min = Math.floor(timeLeft / 60);
     const sec = timeLeft % 60;
-    timerEl.textContent = `${fmt(min)}:${fmt(sec)}`;
+    timerEl!.textContent = `${fmt(min)}:${fmt(sec)}`;
     if (cycleInfo) {
-      cycleInfo.textContent = `Cycle ${currentCycle} / ${cycles} ${isBreak ? "(Break)" : "(Work)"}`;
+      const cycleLine = t("timer.cycle", { current: currentCycle, total: cycles });
+      const phase = isBreak ? t("timer.phase.break") : t("timer.phase.work");
+      cycleInfo.textContent = `${cycleLine} (${phase})`;
     }
     updateTitle();
   }
@@ -68,6 +134,44 @@ import { storage } from "../utils/storage.js";
       clearInterval(timerInterval);
       timerInterval = null;
     }
+  }
+
+  async function recordPomodoro(isCycleEnd: boolean) {
+    const result = applyPomodoroComplete(state, { isCycleEnd });
+    state = await patchState(result.patch);
+    updateProgressionUI();
+
+    if (result.gained.rankUp) {
+      showLevelUp(result.gained.toRank.index, result.gained.toRank.emoji);
+    } else if (result.gained.newAchievements.length > 0) {
+      showAchievement(result.gained.newAchievements[0]);
+    }
+  }
+
+  function showLevelUp(rankIndex: number, emoji: string) {
+    const overlay = byId<HTMLDivElement>("levelUpOverlay");
+    const title = byId<HTMLDivElement>("levelUpTitle");
+    const sub = byId<HTMLDivElement>("levelUpRank");
+    if (!overlay || !title || !sub) return;
+    title.textContent = t("timer.levelup");
+    sub.textContent = `${emoji} ${t(`rank.${rankIndex}`)}`;
+    overlay.classList.remove("hidden");
+    overlay.classList.add("level-up-active");
+    playSound("start.wav");
+    setTimeout(() => {
+      overlay.classList.add("hidden");
+      overlay.classList.remove("level-up-active");
+    }, 2800);
+  }
+
+  function showAchievement(id: string) {
+    const toast = byId<HTMLDivElement>("achievementToast");
+    if (!toast) return;
+    const def = ACHIEVEMENTS.find((a) => a.id === id);
+    const label = def ? t(`ach.${id}.label`) : id;
+    toast.textContent = t("timer.achievement.unlocked", { label });
+    toast.classList.remove("hidden");
+    setTimeout(() => toast.classList.add("hidden"), 2500);
   }
 
   function startTimer() {
@@ -84,60 +188,66 @@ import { storage } from "../utils/storage.js";
       isRunning = false;
 
       if (!isBreak) {
-        // Work -> Break
+        const isLastWorkOfSession = currentCycle >= cycles;
+        void recordPomodoro(isLastWorkOfSession);
+
         isBreak = true;
-        timeLeft = breakDuration * 60;
+        timeLeft = Math.round(breakDuration * 60);
         playSound("end.wav");
-        notify("⏸ Break time!", `Good job ${pseudo}! Take a ${breakDuration} min break.`);
+        notify(
+          t("notif.break.title"),
+          t("notif.break.body", { name: pseudo, min: breakDuration }),
+        );
 
         setTimeout(() => {
           updateDisplay();
           startTimer();
           isRunning = true;
-          if (startPauseBtn) startPauseBtn.textContent = "Break";
+          refreshStartPauseLabel();
         }, 1000);
-
       } else {
-        // Break -> Work or End
         isBreak = false;
         currentCycle++;
 
         if (currentCycle > cycles) {
-          // timerEl.textContent = "Pomodoro finished! 🍅";
           timeLeft = 0;
           isRunning = false;
-          if (startPauseBtn) startPauseBtn.textContent = "Start";
+          refreshStartPauseLabel();
           playSound("end.wav");
-          notify("🍅 Pomodoro done!", `All ${cycles} cycles completed. Well done ${pseudo}!`);
+          notify(
+            t("notif.done.title"),
+            t("notif.done.body", { n: cycles, name: pseudo }),
+          );
           updateTitle();
           return;
         } else {
           timeLeft = duration * 60;
-          // timerEl.textContent = "Go!";
           playSound("start.wav");
-          notify("▶️ Back to work!", `Cycle ${currentCycle} / ${cycles} — let's focus!`);
+          notify(
+            t("notif.back.title"),
+            t("notif.back.body", { current: currentCycle, total: cycles }),
+          );
           setTimeout(() => {
             updateDisplay();
             startTimer();
             isRunning = true;
-            if (startPauseBtn) startPauseBtn.textContent = "Break";
+            refreshStartPauseLabel();
           }, 1000);
         }
       }
     }, 1000);
 
     isRunning = true;
-    if (startPauseBtn) startPauseBtn.textContent = "Break";
+    refreshStartPauseLabel();
   }
 
   startPauseBtn?.addEventListener("click", () => {
     if (isRunning) {
       clearTimer();
       isRunning = false;
-      if (startPauseBtn) startPauseBtn.textContent = "Start";
+      refreshStartPauseLabel();
       updateTitle();
     } else {
-      // Reset to first cycle if we were at the end of the last break
       if (currentCycle > cycles) {
         currentCycle = 1;
         isBreak = false;
@@ -149,22 +259,37 @@ import { storage } from "../utils/storage.js";
     }
   });
 
-  resetBtn?.addEventListener("click", () => {
+  resetBtn?.addEventListener("click", async () => {
     clearTimer();
-    duration = storage.getNumber("duration", 25);
-    breakDuration = storage.getNumber("breakDuration", 0.1);
-    cycles = storage.getNumber("cycles", 4);
+    state = await loadState(true);
+    duration = state.preferences.duration;
+    breakDuration = state.preferences.breakDuration;
+    cycles = state.preferences.cycles;
     isBreak = false;
     currentCycle = 1;
     timeLeft = duration * 60;
     isRunning = false;
-    if (startPauseBtn) startPauseBtn.textContent = "Start";
+    refreshStartPauseLabel();
     updateDisplay();
+    updateProgressionUI();
   });
 
-  settingsBtn?.addEventListener("click", () => {
-    window.electronAPI.navigate("settings.html");
+  settingsBtn?.addEventListener("click", () => window.electronAPI.navigate("settings.html"));
+  profileBtn?.addEventListener("click", () => window.electronAPI.navigate("profile.html"));
+
+  langToggle?.addEventListener("click", async () => {
+    const next = getLang() === "en" ? "fr" : "en";
+    setLang(next);
+    state = await patchState({ preferences: { language: next } });
+    applyI18n();
+    refreshLangToggle();
+    refreshStartPauseLabel();
+    updateDisplay();
+    updateProgressionUI();
   });
 
+  refreshLangToggle();
+  refreshStartPauseLabel();
   updateDisplay();
+  updateProgressionUI();
 })();

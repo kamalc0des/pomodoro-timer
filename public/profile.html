@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html data-theme="retro-teal" lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Profile</title>
+  <link rel="stylesheet" href="../dist/styles.css">
+</head>
+
+<body class="bg-bg text-fg min-h-screen flex flex-col p-4">
+
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-xl font-bold" data-i18n="profile.title"></h2>
+    <div class="flex gap-2 items-center">
+      <button id="langToggle"
+        class="text-xs bg-surface/40 border border-border/20 px-2 py-1 rounded-md hover:bg-surface/60 transition">
+        EN / FR
+      </button>
+      <button id="backBtn" data-i18n="common.back"
+        class="bg-surface/40 border border-border/20 text-fg font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-surface/55 transition text-sm">
+      </button>
+    </div>
+  </div>
+
+  <div class="flex flex-col items-center mb-6">
+    <img id="profilePic" class="w-24 h-24 rounded-full border-2 border-accent shadow-lg mb-3" />
+    <h3 id="pseudoLabel" class="text-lg font-bold"></h3>
+    <div id="rankBadge" class="mt-2 px-4 py-1 rounded-full text-sm font-semibold"></div>
+  </div>
+
+  <div class="w-full max-w-sm mx-auto mb-4">
+    <div class="flex justify-between text-xs text-muted mb-1">
+      <span id="rankFromLabel"></span>
+      <span id="rankToLabel"></span>
+    </div>
+    <div class="w-full h-3 bg-surface/30 rounded-full overflow-hidden">
+      <div id="xpFill" class="h-full transition-all duration-500 rounded-full" style="width: 0%"></div>
+    </div>
+    <div class="text-center text-xs text-muted mt-1" id="xpLabel"></div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3 mb-6 max-w-sm mx-auto w-full">
+    <div class="bg-surface/30 rounded-lg p-3 text-center">
+      <div class="text-2xl font-bold" id="statPomodoros">0</div>
+      <div class="text-xs text-muted" data-i18n="profile.stat.pomodoros"></div>
+    </div>
+    <div class="bg-surface/30 rounded-lg p-3 text-center">
+      <div class="text-2xl font-bold" id="statMinutes">0</div>
+      <div class="text-xs text-muted" data-i18n="profile.stat.minutes"></div>
+    </div>
+    <div class="bg-surface/30 rounded-lg p-3 text-center">
+      <div class="text-2xl font-bold" id="statStreak">0</div>
+      <div class="text-xs text-muted" data-i18n="profile.stat.streak"></div>
+    </div>
+  </div>
+
+  <div class="max-w-sm mx-auto w-full mb-4">
+    <h4 class="text-sm font-semibold mb-2 text-muted" data-i18n="profile.mission.title"></h4>
+    <div id="missionCard" class="bg-surface/30 rounded-lg p-3 text-sm"></div>
+  </div>
+
+  <div class="max-w-sm mx-auto w-full mb-4">
+    <h4 class="text-sm font-semibold mb-2 text-muted" data-i18n="profile.achievements.title"></h4>
+    <div id="achievementsGrid" class="grid grid-cols-2 gap-2"></div>
+  </div>
+
+  <script type="module" src="../dist/src/renderer/profile.js"></script>
+</body>
+
+</html>
