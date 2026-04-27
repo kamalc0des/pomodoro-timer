@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-theme="retro-teal">
+<html data-theme="retro-teal" lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -14,9 +14,18 @@
       <img id="profilePic" class="w-12 h-12 rounded-full border border-border/30" />
       <div>
         <h2 id="userInfo" class="text-sm font-semibold text-fg"></h2>
+        <span id="rankLabel" class="text-xs text-muted"></span>
       </div>
     </div>
-    <div>
+    <div class="flex gap-2 items-center">
+      <button id="langToggle"
+        class="text-xs bg-surface/40 border border-border/20 px-2 py-1 rounded-md hover:bg-surface/60 transition">
+        EN / FR
+      </button>
+      <button id="profileBtn"
+        class="bg-bg/40 border border-border/20 text-xl font-semibold py-2.5 px-3 rounded-lg shadow-md hover:bg-bg/60 transition">
+        🧬
+      </button>
       <button id="settingsBtn"
         class="bg-bg/40 border border-border/20 text-xl font-semibold py-2.5 px-3 rounded-lg shadow-md hover:bg-bg/60 transition">
         ⚙️
@@ -25,21 +34,28 @@
   </div>
 
   <div class="flex flex-col items-center justify-center flex-1 pt-20">
-    <div class="flex flex-col items-center justify-center mb-8">
-      <div id="timer" class="text-6xl font-mono tracking-tight text-fg">
-        25:00
-      </div>
+    <div class="flex flex-col items-center justify-center mb-6">
+      <div id="timer" class="text-6xl font-mono tracking-tight text-fg">25:00</div>
       <div id="cycleInfo" class="text-xs text-muted"></div>
+    </div>
+
+    <div class="w-full max-w-xs mb-4">
+      <div class="flex justify-between text-xs text-muted mb-1">
+        <span data-i18n="timer.xp">XP</span>
+        <span id="xpLabel"></span>
+      </div>
+      <div class="w-full h-2 bg-surface/30 rounded-full overflow-hidden">
+        <div id="xpFill" class="h-full transition-all duration-500 rounded-full" style="width: 0%"></div>
+      </div>
+      <div id="missionLabel" class="text-xs text-muted mt-2 text-center"></div>
     </div>
 
     <div class="flex flex-wrap gap-3 justify-center">
       <button id="startPauseBtn"
         class="bg-accent text-accentFg font-semibold py-2.5 px-6 rounded-lg shadow-md hover:opacity-90 transition">
-        Start
       </button>
-      <button id="resetBtn"
+      <button id="resetBtn" data-i18n="timer.reset"
         class="bg-surface/40 border border-border/20 text-fg font-semibold py-2.5 px-6 rounded-lg shadow-md hover:bg-surface/55 transition">
-        Reset
       </button>
     </div>
   </div>
@@ -49,6 +65,16 @@
       href="https://kamalcodes.dev">
       Support me and visit my portfolio: @kamalcodes</a>
   </footer>
+
+  <div id="levelUpOverlay"
+    class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center bg-bg/95 backdrop-blur-sm">
+    <div id="levelUpTitle" class="text-3xl font-extrabold text-accent tracking-widest level-up-title"></div>
+    <div id="levelUpRank" class="text-5xl font-bold mt-4 level-up-rank"></div>
+  </div>
+
+  <div id="achievementToast"
+    class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-surface border border-accent/40 text-fg px-4 py-2 rounded-lg shadow-xl text-sm z-40">
+  </div>
 
   <script type="module" src="../dist/src/renderer/timer.js"></script>
 </body>

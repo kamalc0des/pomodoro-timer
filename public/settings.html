@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-theme="retro-teal">
+<html data-theme="retro-teal" lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -9,84 +9,74 @@
 
 <body class="bg-bg text-fg min-h-screen flex flex-col items-center justify-center px-4 py-4">
 
-  <div id="pageContent" class="flex flex-col items-center w-full">
-    <h2 class="text-2xl font-bold mb-6 text-fg">Settings</h2>
-    <!-- <h2 class="text-2xl font-bold mb-2 text-fg">Welcome!</h2> -->
+  <button id="langToggle"
+    class="fixed top-3 right-3 text-xs bg-surface/40 border border-border/20 px-2 py-1 rounded-md hover:bg-surface/60 transition z-40">
+    EN / FR
+  </button>
 
-    <form id="settingsForm" class="flex flex-col gap-2 w-full">
+  <div id="pageContent" class="flex flex-col items-center w-full max-w-sm">
+    <h2 class="text-2xl font-bold mb-6 text-fg" data-i18n="settings.title">Settings</h2>
 
-      <div class="flex gap-3 w-full">
-        <label class="flex flex-col gap-1 flex-1">
-          <span class="text-xs text-muted">Duration (min)</span>
-          <input type="number" id="duration" min="1" max="60" class="bg-bg/40 border border-border/20 rounded-lg px-3 py-1.5 w-full text-sm
-                 focus:outline-none focus:ring-2 focus:ring-accent/60 text-fg" />
-        </label>
+    <form id="settingsForm" class="flex flex-col gap-4 w-full">
 
-        <label class="flex flex-col gap-1 flex-1">
-          <span class="text-xs text-muted">Cycles</span>
-          <input type="number" id="cycles" min="1" max="12" class="bg-bg/40 border border-border/20 rounded-lg px-3 py-1.5 w-full text-sm
-                 focus:outline-none focus:ring-2 focus:ring-accent/60 text-fg" />
-        </label>
+      <div class="flex flex-col gap-3 rhythm-picker w-full"></div>
+
+      <div class="flex flex-col gap-1">
+        <span class="text-xs text-muted" data-i18n="settings.theme"></span>
+        <div class="grid grid-cols-2 gap-2 w-full">
+          <button type="button" data-theme="retro-teal"
+            class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
+            <span class="w-4 h-4 rounded-full flex-shrink-0"
+              style="background: linear-gradient(135deg, #2dd4bf, #0f766e)"></span>
+            Retro Teal
+          </button>
+          <button type="button" data-theme="coral-teal"
+            class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
+            <span class="w-4 h-4 rounded-full flex-shrink-0"
+              style="background: linear-gradient(135deg, #fb7185, #2dd4bf)"></span>
+            Coral Teal
+          </button>
+          <button type="button" data-theme="burgundy-gold"
+            class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
+            <span class="w-4 h-4 rounded-full flex-shrink-0"
+              style="background: linear-gradient(135deg, #9f1239, #ca8a04)"></span>
+            Burgundy Gold
+          </button>
+          <button type="button" data-theme="slate-orange"
+            class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
+            <span class="w-4 h-4 rounded-full flex-shrink-0"
+              style="background: linear-gradient(135deg, #475569, #ea580c)"></span>
+            Slate Orange
+          </button>
+        </div>
       </div>
 
-      <!-- Theme picker -->
-      <span class="text-xs text-muted mt-1">Theme</span>
-      <div class="grid grid-cols-2 gap-2 w-full">
+      <label class="flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-surface/20 border border-border/20 text-sm cursor-pointer">
+        <span data-i18n="settings.notifications.label"></span>
+        <input type="checkbox" id="notificationsToggle" class="w-4 h-4 accent-accent" />
+      </label>
 
-        <button type="button" data-theme="retro-teal"
-          class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
-          <span class="w-4 h-4 rounded-full flex-shrink-0"
-            style="background: linear-gradient(135deg, #2dd4bf, #0f766e)"></span>
-          Retro Teal
-        </button>
-
-        <button type="button" data-theme="coral-teal"
-          class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
-          <span class="w-4 h-4 rounded-full flex-shrink-0"
-            style="background: linear-gradient(135deg, #fb7185, #2dd4bf)"></span>
-          Coral Teal
-        </button>
-
-        <button type="button" data-theme="burgundy-gold"
-          class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
-          <span class="w-4 h-4 rounded-full flex-shrink-0"
-            style="background: linear-gradient(135deg, #9f1239, #ca8a04)"></span>
-          Burgundy Gold
-        </button>
-
-        <button type="button" data-theme="slate-orange"
-          class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
-          <span class="w-4 h-4 rounded-full flex-shrink-0"
-            style="background: linear-gradient(135deg, #475569, #ea580c)"></span>
-          Slate Orange
-        </button>
-
-      </div>
-
-      <div class="flex gap-2 w-full mt-1">
-        <button type="submit"
+      <div class="flex gap-2 w-full">
+        <button type="submit" data-i18n="common.save"
           class="flex-1 bg-accent text-accentFg font-semibold py-2 px-4 rounded-lg shadow-md hover:opacity-90 transition text-sm">
-          Save
         </button>
-        <button type="button" id="backBtn"
+        <button type="button" id="backBtn" data-i18n="settings.go.back"
           class="flex-1 bg-surface/40 border border-border/20 text-fg font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-surface/55 transition text-sm">
-          Go back
-        </button>
-        <button id="resetAppBtnSettings"
-          class="text-xs text-muted hover:text-red-400 transition-colors duration-200 underline underline-offset-2 cursor-pointer">
-          Delete my profile
         </button>
       </div>
 
+      <button type="button" id="resetAppBtnSettings" data-i18n="settings.delete"
+        class="text-xs text-muted hover:text-red-400 transition-colors duration-200 underline underline-offset-2 cursor-pointer self-center mt-2">
+      </button>
     </form>
   </div>
 
-  <div id="settingsMsg" class="mt-2 text-xs text-green-500 h-4"></div>
+  <div id="settingsMsg" class="mt-2 text-xs text-red-400 h-4"></div>
 
   <div id="savedOverlay" class="fixed inset-0 flex flex-col items-center justify-center bg-bg z-50"
     style="opacity: 0; pointer-events: none;">
     <div id="savedIcon" class="text-5xl mb-4" style="transform: scale(0)">✅</div>
-    <p class="text-xl font-bold text-accent" style="opacity: 0" id="savedText">Settings saved!</p>
+    <p class="text-xl font-bold text-accent" style="opacity: 0" id="savedText" data-i18n="settings.saved"></p>
   </div>
 
   <script type="module" src="../dist/src/renderer/settings.js"></script>
