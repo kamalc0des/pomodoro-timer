@@ -1,113 +1,126 @@
 import { byId } from "../utils/dom.js";
-import { storage } from "../utils/storage.js";
+import { loadState, patchState, resetAppState } from "../utils/storage.js";
+import { applyI18n, getLang, setLang, t } from "../utils/i18n.js";
+import { mountRhythmPicker, type RhythmValues } from "../utils/rhythmPicker.js";
 
-if (!window._electronApiDeclared) {
-  window._electronApiDeclared = true;
-}
+(async function initSettingsPage() {
+  if (!window._electronApiDeclared) window._electronApiDeclared = true;
 
-// Theme management
-const root = document.documentElement;
-const themeButtons = document.querySelectorAll<HTMLButtonElement>(".theme-btn");
+  const state = await loadState();
+  const root = document.documentElement;
+  root.dataset.theme = state.preferences.theme;
+  applyI18n();
 
-const saved = localStorage.getItem("theme") ?? "retro-teal";
-root.dataset.theme = saved;
-highlightActive(saved);
+  const langToggle = byId<HTMLButtonElement>("langToggle");
+  function refreshLangToggle() {
+    if (langToggle) langToggle.textContent = getLang() === "en" ? "FR" : "EN";
+  }
+  refreshLangToggle();
 
-themeButtons.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const theme = btn.dataset.theme!;
-    root.dataset.theme = theme;
-    localStorage.setItem("theme", theme);
-    highlightActive(theme);
-  });
-});
+  const themeButtons = document.querySelectorAll<HTMLButtonElement>(".theme-btn");
+  function highlightActive(theme: string) {
+    themeButtons.forEach((btn) => {
+      const isActive = btn.dataset.theme === theme;
+      btn.classList.toggle("ring-2", isActive);
+      btn.classList.toggle("ring-accent", isActive);
+      btn.classList.toggle("bg-surface/40", isActive);
+    });
+  }
+  highlightActive(state.preferences.theme);
 
-function highlightActive(theme: string) {
+  let pendingTheme = state.preferences.theme;
   themeButtons.forEach((btn) => {
-    const isActive = btn.dataset.theme === theme;
-    btn.classList.toggle("ring-2", isActive);
-    btn.classList.toggle("ring-accent", isActive);
-    btn.classList.toggle("bg-surface/40", isActive);
+    btn.addEventListener("click", () => {
+      const theme = btn.dataset.theme!;
+      pendingTheme = theme;
+      root.dataset.theme = theme;
+      highlightActive(theme);
+    });
   });
-}
 
-// Reset app data
-const resetAppBtnSettings = byId<HTMLButtonElement>("resetAppBtnSettings");
-resetAppBtnSettings?.addEventListener("click", () => {
-  localStorage.clear();
-  location.reload();
-  window.electronAPI.navigate("index.html");
-});
+  const resetBtn = byId<HTMLButtonElement>("resetAppBtnSettings");
+  resetBtn?.addEventListener("click", async () => {
+    await resetAppState();
+    window.electronAPI.navigate("onboarding.html");
+  });
 
+  const notifToggle = byId<HTMLInputElement>("notificationsToggle");
+  if (notifToggle) {
+    notifToggle.checked = state.preferences.notificationsEnabled;
+  }
 
-// Settings form
-const form = byId<HTMLFormElement>("settingsForm");
-if (!form) {
-  // Do nothing
-} else {
-  const durationInput = byId<HTMLInputElement>("duration");
-  const cyclesInput = byId<HTMLInputElement>("cycles");
+  const rhythmContainer = document.querySelector<HTMLDivElement>(".rhythm-picker");
+  let rhythm: RhythmValues = {
+    duration: state.preferences.duration,
+    breakDuration: state.preferences.breakDuration,
+    cycles: state.preferences.cycles,
+  };
+  if (rhythmContainer) {
+    mountRhythmPicker(rhythmContainer, rhythm, (next) => {
+      rhythm = next;
+    });
+  }
+
+  const form = byId<HTMLFormElement>("settingsForm");
   const msg = byId<HTMLDivElement>("settingsMsg");
   const backBtn = byId<HTMLButtonElement>("backBtn");
 
-  if (durationInput) durationInput.value = String(storage.getNumber("duration", 25));
-  if (cyclesInput) cyclesInput.value = String(storage.getNumber("cycles", 4));
-
-  form.onsubmit = async (e: SubmitEvent) => {
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (rhythm.duration <= 0 || rhythm.breakDuration <= 0 || rhythm.cycles <= 0) {
+      if (msg) msg.textContent = t("settings.invalid");
+      return;
+    }
 
-    const newDuration = parseInt(durationInput?.value ?? "0", 10);
-    const newCycles = parseInt(cyclesInput?.value ?? "0", 10);
+    await patchState({
+      preferences: {
+        duration: rhythm.duration,
+        breakDuration: rhythm.breakDuration,
+        cycles: rhythm.cycles,
+        theme: pendingTheme,
+        notificationsEnabled: notifToggle?.checked ?? true,
+      },
+    });
 
-    if (newDuration > 0 && newCycles > 0) {
-      storage.set("duration", newDuration);
-      storage.set("cycles", newCycles);
-
-      const pageContent = byId<HTMLDivElement>("pageContent")!;
+    const pageContent = byId<HTMLDivElement>("pageContent");
+    const overlay = byId<HTMLDivElement>("savedOverlay");
+    const icon = byId<HTMLDivElement>("savedIcon");
+    const text = byId<HTMLParagraphElement>("savedText");
+    if (pageContent) {
       pageContent.style.transition = "opacity 0.4s ease";
       pageContent.style.opacity = "0";
-
-      await new Promise(res => setTimeout(res, 400));
-
-      // 2. Afficher l'overlay (reste visible car pas affecté par le fade)
-      const overlay = byId<HTMLDivElement>("savedOverlay")!;
-      const icon = byId<HTMLDivElement>("savedIcon")!;
-      const text = byId<HTMLParagraphElement>("savedText")!;
-
+    }
+    await new Promise((res) => setTimeout(res, 400));
+    if (overlay) {
       overlay.style.transition = "opacity 0.4s ease";
       overlay.style.pointerEvents = "all";
       overlay.style.opacity = "1";
-
-      await new Promise(res => setTimeout(res, 100));
-
-      icon.style.transition = "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)";
-      icon.style.transform = "scale(1)";
-
-      text.style.transition = "opacity 0.4s ease";
-      text.style.opacity = "1";
-
-      await new Promise(res => setTimeout(res, 1500));
-      window.electronAPI.navigate("timer.html");
-
-      // 3. Pop de l'icône + fade du texte
-      icon.style.transition = "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)";
-      icon.style.transform = "scale(1)";
-
-      text.style.transition = "opacity 0.4s ease";
-      text.style.opacity = "1";
-
-      // 4. Navigation
-      await new Promise(res => setTimeout(res, 1500));
-      window.electronAPI.navigate("timer.html");
-
-    } else if (msg) {
-      msg.textContent = "Invalid values";
     }
-  };
-
-  backBtn?.addEventListener("click", async () => {
+    await new Promise((res) => setTimeout(res, 100));
+    if (icon) {
+      icon.style.transition = "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)";
+      icon.style.transform = "scale(1)";
+    }
+    if (text) {
+      text.style.transition = "opacity 0.4s ease";
+      text.style.opacity = "1";
+    }
+    await new Promise((res) => setTimeout(res, 1200));
     window.electronAPI.navigate("timer.html");
   });
 
+  backBtn?.addEventListener("click", () => {
+    window.electronAPI.navigate("timer.html");
+  });
 
-}
+  langToggle?.addEventListener("click", async () => {
+    const next = getLang() === "en" ? "fr" : "en";
+    setLang(next);
+    await patchState({ preferences: { language: next } });
+    applyI18n();
+    refreshLangToggle();
+    if (rhythmContainer) {
+      mountRhythmPicker(rhythmContainer, rhythm, (n) => { rhythm = n; });
+    }
+  });
+})();
