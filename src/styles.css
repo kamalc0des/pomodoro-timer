@@ -9,6 +9,84 @@
   body { opacity: 0; }
   body.no-anim { opacity: 1; }
 
+  /* Global cursor: pointer on all interactive elements (Tailwind cursor-* still overrides) */
+  button:not(:disabled),
+  a[href],
+  [role="button"]:not(:disabled),
+  label[for],
+  summary {
+    cursor: pointer;
+  }
+  button:disabled,
+  [role="button"][aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+  /* Native file input "Choose file" button (pseudo-element) */
+  input[type="file"]::file-selector-button,
+  input[type="file"]::-webkit-file-upload-button {
+    cursor: pointer;
+  }
+
+  /* Pixel art icons — crisp upscaling for sprite-style PNGs */
+  .pixel-icon {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    display: inline-block;
+    vertical-align: middle;
+    object-fit: contain;
+  }
+  .pixel-icon-sm { width: 16px; height: 16px; }
+  .pixel-icon-md { width: 24px; height: 24px; }
+  .pixel-icon-lg { width: 64px; height: 64px; }
+  /* Emoji fallback when image missing — match approximate pixel sizes */
+  .pixel-fallback-sm { font-size: 14px; line-height: 1; display: inline-block; vertical-align: middle; }
+  .pixel-fallback-md { font-size: 20px; line-height: 1; display: inline-block; vertical-align: middle; }
+  .pixel-fallback-lg { font-size: 56px; line-height: 1; display: inline-block; vertical-align: middle; }
+  /* Theme button: image overlay on top of gradient (gradient = fallback if image missing) */
+  .theme-pastille {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    image-rendering: pixelated;
+  }
+  /* Team 7 character portraits — circle crop with face-focused positioning */
+  .theme-portrait {
+    width: 28px;
+    height: 28px;
+    border-radius: 9999px;
+    object-fit: cover;
+    object-position: top center;
+    flex-shrink: 0;
+    border: 1px solid rgb(var(--border) / 0.3);
+  }
+
+  /* Achievement rank styling — D / C / B / S (mission ranks, distinct from career ranks) */
+  .ach-tier-d { border-color: rgb(180 130 90 / 0.55); }
+  .ach-tier-c { border-color: rgb(190 200 210 / 0.55); }
+  .ach-tier-b { border-color: rgb(232 196 90 / 0.7); box-shadow: 0 0 0 1px rgb(232 196 90 / 0.25); }
+
+  /* Achievement card — expandable when description overflows (markdown-style click to reveal) */
+  .ach-card { transition: padding 0.2s ease; }
+  .ach-expandable { cursor: pointer; }
+  .ach-expandable:hover { background-color: rgb(var(--surface) / 0.55); }
+  .ach-card.expanded .truncate {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+  .ach-tier-s {
+    border-color: rgb(255 230 130 / 0.85);
+    box-shadow: 0 0 12px rgb(255 200 80 / 0.4), inset 0 0 8px rgb(255 220 120 / 0.18);
+    background: linear-gradient(115deg, rgb(var(--surface) / 0.5) 30%, rgb(255 220 130 / 0.1) 50%, rgb(var(--surface) / 0.5) 70%);
+    background-size: 200% 100%;
+    animation: legendary-shimmer 4s linear infinite;
+  }
+  @keyframes legendary-shimmer {
+    0%   { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+  }
+
   /* Custom hover tooltip — usage: <el data-tooltip="text"> */
   [data-tooltip] { position: relative; }
   [data-tooltip]::after {
@@ -17,14 +95,17 @@
     bottom: calc(100% + 6px);
     left: 50%;
     transform: translateX(-50%) translateY(2px);
-    padding: 4px 8px;
+    padding: 6px 10px;
     background: rgb(var(--surface));
     color: #fff;
     border: 1px solid rgb(var(--border) / 0.4);
     border-radius: 6px;
     font-size: 11px;
-    line-height: 1;
-    white-space: nowrap;
+    line-height: 1.4;
+    max-width: 240px;
+    width: max-content;
+    white-space: normal;
+    text-align: center;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.15s ease, transform 0.15s ease;

@@ -21,9 +21,9 @@ interface SliderConfig {
 }
 
 const CONFIGS: SliderConfig[] = [
-  { id: "duration", labelKey: "settings.duration", unit: "min", min: 5, max: 60, step: 5 },
+  { id: "duration", labelKey: "settings.duration", unit: "min", min: 1, max: 60, step: 1 },
   { id: "breakDuration", labelKey: "settings.break", unit: "min", min: 2, max: 20, step: 2 },
-  { id: "cycles", labelKey: "settings.cycles", unit: "", min: 1, max: 4, step: 1 },
+  { id: "cycles", labelKey: "settings.cycles", unit: "", min: 2, max: 4, step: 1 },
 ];
 
 function snap(value: number, step: number, min: number, max: number): number {
@@ -37,9 +37,9 @@ export function mountRhythmPicker(
   onChange: (next: RhythmValues) => void,
 ): RhythmPickerHandle {
   const values: RhythmValues = {
-    duration: snap(initial.duration, 5, 5, 60),
+    duration: snap(initial.duration, 1, 1, 60),
     breakDuration: snap(initial.breakDuration, 2, 2, 20),
-    cycles: snap(initial.cycles, 1, 1, 4),
+    cycles: snap(initial.cycles, 1, 2, 4),
   };
 
   container.innerHTML = "";
