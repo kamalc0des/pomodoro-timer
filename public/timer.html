@@ -47,20 +47,31 @@
       <button type="button" data-mode="timer" data-i18n="timer.mode.timer"
         class="mode-btn px-4 py-1 rounded-full font-semibold transition"></button>
     </div>
-    <div class="flex flex-col items-center justify-center mb-6">
-      <div id="timer" class="text-6xl font-mono tracking-tight text-fg">25:00</div>
-    </div>
 
-    <div class="flex flex-wrap gap-3 justify-center mb-3">
-      <button id="startPauseBtn" data-i18n="timer.start"
-        class="bg-accent text-accentFg font-semibold py-2.5 px-6 rounded-lg shadow-md hover:opacity-90 transition">
-      </button>
-      <button id="resetBtn" data-i18n="timer.reset"
-        class="bg-surface/40 border border-border/20 text-fg font-semibold py-2.5 px-6 rounded-lg shadow-md hover:bg-surface/55 transition">
-      </button>
-    </div>
+    <div id="timerArea" class="flex flex-col items-center w-full">
+      <div class="flex items-center justify-center gap-4 mb-6">
+        <button id="timerMinusBtn" type="button"
+          class="hidden w-9 h-9 rounded-full bg-surface/40 border border-border/20 hover:bg-surface/60 disabled:opacity-30 disabled:cursor-not-allowed transition flex items-center justify-center">
+          <i data-lucide="minus" class="w-4 h-4"></i>
+        </button>
+        <div id="timer" class="text-6xl font-mono tracking-tight text-fg">25:00</div>
+        <button id="timerPlusBtn" type="button"
+          class="hidden w-9 h-9 rounded-full bg-surface/40 border border-border/20 hover:bg-surface/60 disabled:opacity-30 disabled:cursor-not-allowed transition flex items-center justify-center">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+        </button>
+      </div>
 
-    <div id="cycleInfo" class="text-xs text-muted text-center"></div>
+      <div class="flex flex-wrap gap-3 justify-center mb-3">
+        <button id="startPauseBtn" data-i18n="timer.start"
+          class="bg-accent text-accentFg font-semibold py-2.5 px-6 rounded-lg shadow-md hover:opacity-90 transition">
+        </button>
+        <button id="resetBtn" data-i18n="timer.reset"
+          class="bg-surface/40 border border-border/20 text-fg font-semibold py-2.5 px-6 rounded-lg shadow-md hover:bg-surface/55 transition">
+        </button>
+      </div>
+
+      <div id="cycleInfo" class="text-xs text-muted text-center"></div>
+    </div>
   </div>
 
   <footer class="mt-auto flex justify-center pb-3">

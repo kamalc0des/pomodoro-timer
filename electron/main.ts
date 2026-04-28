@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Notification, shell } from "electron";
+import { app, BrowserWindow, ipcMain, nativeImage, Notification, shell } from "electron";
 import { join } from "path";
 import { getState, initFromOSLocale, updateState, resetState } from "./store";
 import type { StatePatch } from "../src/types/state";
@@ -52,6 +52,11 @@ function createWindow(): void {
 app.whenReady().then(() => {
   if (process.platform === "darwin") {
     app.setAppUserModelId(app.name);
+    // Override the default Electron dock icon in dev — packaged apps use the .icns from Resources
+    const dockIcon = nativeImage.createFromPath(iconPath());
+    if (!dockIcon.isEmpty()) {
+      app.dock?.setIcon(dockIcon);
+    }
   }
   initFromOSLocale();
   createWindow();

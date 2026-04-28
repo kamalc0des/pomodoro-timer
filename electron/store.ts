@@ -17,6 +17,7 @@ const defaults: AppState = {
     notificationsEnabled: true,
     language: "en",
     mode: "pomodoro",
+    timerDuration: 25,
   },
   progression: {
     xp: 0,

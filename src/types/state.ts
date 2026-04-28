@@ -18,6 +18,8 @@ export interface Preferences {
   language: Lang;
   /** "pomodoro" = full cycle/break flow with XP. "timer" = simple countdown. */
   mode?: AppMode;
+  /** Duration (minutes) for simple timer mode — separate from pomodoro `duration` */
+  timerDuration?: number;
 }
 
 export interface AchievementLogEntry {

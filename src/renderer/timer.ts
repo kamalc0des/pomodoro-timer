@@ -61,9 +61,10 @@ import type { AppState } from "../types/state.js";
   const pseudo = state.profile.pseudo;
 
   let mode: "pomodoro" | "timer" = state.preferences.mode === "timer" ? "timer" : "pomodoro";
+  let timerDuration = Math.max(1, Math.min(60, state.preferences.timerDuration ?? 25));
   let currentCycle = 1;
   let isBreak = false;
-  let timeLeft = duration * 60;
+  let timeLeft = (mode === "timer" ? timerDuration : duration) * 60;
   let timerInterval: ReturnType<typeof setInterval> | null = null;
   let isRunning = false;
   let sessionXp = 0; // accumulator for the current session's XP gain (pomodoro mode only)
@@ -86,8 +87,10 @@ import type { AppState } from "../types/state.js";
   }
 
   function refreshStartPauseLabel() {
-    if (!startPauseBtn) return;
-    startPauseBtn.textContent = isRunning ? t("timer.pause") : t("timer.start");
+    if (startPauseBtn) {
+      startPauseBtn.textContent = isRunning ? t("timer.pause") : t("timer.start");
+    }
+    refreshTimerControls();
   }
 
   function updateProgressionUI() {
@@ -214,10 +217,11 @@ import type { AppState } from "../types/state.js";
       if (mode === "timer") {
         playSound();
         notify(t("timer.simple.done.title"), t("timer.simple.done.body"));
-        timeLeft = duration * 60;
+        timeLeft = timerDuration * 60;
         refreshStartPauseLabel();
         updateDisplay();
         updateTitle();
+        refreshTimerControls();
         return;
       }
 
@@ -348,6 +352,68 @@ import type { AppState } from "../types/state.js";
     updateProgressionUI();
   });
 
+  // Inline +/- controls for timer mode
+  const timerMinusBtn = byId<HTMLButtonElement>("timerMinusBtn");
+  const timerPlusBtn = byId<HTMLButtonElement>("timerPlusBtn");
+
+  function isTimerEditable(): boolean {
+    return mode === "timer" && !isRunning && timeLeft === timerDuration * 60;
+  }
+  function refreshTimerControls() {
+    const inTimer = mode === "timer";
+    if (timerMinusBtn) {
+      timerMinusBtn.classList.toggle("hidden", !inTimer);
+      timerMinusBtn.disabled = !isTimerEditable() || timerDuration <= 1;
+    }
+    if (timerPlusBtn) {
+      timerPlusBtn.classList.toggle("hidden", !inTimer);
+      timerPlusBtn.disabled = !isTimerEditable() || timerDuration >= 60;
+    }
+  }
+  async function adjustTimerDuration(delta: number) {
+    if (!isTimerEditable()) return;
+    const next = Math.max(1, Math.min(60, timerDuration + delta));
+    if (next === timerDuration) return;
+    timerDuration = next;
+    timeLeft = timerDuration * 60;
+    state = await patchState({ preferences: { timerDuration } });
+    updateDisplay();
+    refreshTimerControls();
+  }
+
+  /** Bind a button so a single click adjusts once and a long-press auto-repeats. */
+  function bindLongPress(btn: HTMLButtonElement | null, action: () => void) {
+    if (!btn) return;
+    let initialTimeout: ReturnType<typeof setTimeout> | null = null;
+    let repeatInterval: ReturnType<typeof setInterval> | null = null;
+    const stop = () => {
+      if (initialTimeout) {
+        clearTimeout(initialTimeout);
+        initialTimeout = null;
+      }
+      if (repeatInterval) {
+        clearInterval(repeatInterval);
+        repeatInterval = null;
+      }
+    };
+    btn.addEventListener("pointerdown", (e) => {
+      if (btn.disabled) return;
+      e.preventDefault();
+      action();
+      initialTimeout = setTimeout(() => {
+        repeatInterval = setInterval(() => {
+          if (btn.disabled) { stop(); return; }
+          action();
+        }, 90);
+      }, 380);
+    });
+    ["pointerup", "pointerleave", "pointercancel"].forEach((ev) =>
+      btn.addEventListener(ev, stop),
+    );
+  }
+  bindLongPress(timerMinusBtn, () => void adjustTimerDuration(-1));
+  bindLongPress(timerPlusBtn, () => void adjustTimerDuration(1));
+
   // Mode switch (Pomodoro / Timer)
   const modeButtons = document.querySelectorAll<HTMLButtonElement>("#modeSwitch .mode-btn");
   function refreshModeSwitch() {
@@ -356,21 +422,54 @@ import type { AppState } from "../types/state.js";
     });
   }
   refreshModeSwitch();
+  const timerArea = byId<HTMLDivElement>("timerArea");
+
   modeButtons.forEach((btn) => {
     btn.addEventListener("click", async () => {
       const next = btn.dataset.mode === "timer" ? "timer" : "pomodoro";
       if (mode === next) return;
+
+      // Fade out current content
+      if (timerArea && window.Motion?.animate) {
+        const fadeOut = window.Motion.animate as unknown as (
+          el: Element,
+          kf: Record<string, unknown>,
+          opts?: Record<string, unknown>,
+        ) => { finished: Promise<void> };
+        await fadeOut(
+          timerArea,
+          { opacity: [1, 0], y: [0, 8] },
+          { duration: 0.16, easing: [0.65, 0, 0.35, 1] },
+        ).finished;
+      }
+
+      // Swap state
       mode = next;
-      // Reset timer state when switching modes
       clearTimer();
       isRunning = false;
       isBreak = false;
       currentCycle = 1;
-      timeLeft = duration * 60;
+      timeLeft = (mode === "timer" ? timerDuration : duration) * 60;
       sessionXp = 0;
       refreshModeSwitch();
       refreshStartPauseLabel();
       updateDisplay();
+      refreshTimerControls();
+
+      // Fade in new content (spring entry, mirrors page transitions)
+      if (timerArea && window.Motion?.animate) {
+        const fadeIn = window.Motion.animate as unknown as (
+          el: Element,
+          kf: Record<string, unknown>,
+          opts?: Record<string, unknown>,
+        ) => { finished: Promise<void> };
+        fadeIn(
+          timerArea,
+          { opacity: [0, 1], y: [-8, 0] },
+          { type: "spring", stiffness: 320, damping: 24 },
+        );
+      }
+
       // Persist preference
       state = await patchState({ preferences: { mode } });
     });

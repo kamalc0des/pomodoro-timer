@@ -87,17 +87,19 @@ const ach = (
   tier: AchievementTier,
   icon: string,
   track?: AchievementTrack,
+  iconPath?: string,
 ): Achievement => ({
   id,
   tier,
   xpReward: TIER_XP[tier],
   icon,
+  iconPath,
   track,
 });
 
 export const ACHIEVEMENTS: Achievement[] = [
   // Rang D — first steps
-  ach("first_pomodoro", "d", "🍅"),
+  ach("first_pomodoro", "d", "🍅", undefined, "icons/tomato.png"),
   ach("first_cycle", "d", "🔁"),
   ach("total_10", "d", "📘", { metric: "pomodoros", target: 10 }),
   ach("focus_60", "d", "⏱️", { metric: "focusMinutes", target: 60 }),
