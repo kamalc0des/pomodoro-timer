@@ -66,6 +66,14 @@
   .ach-tier-c { border-color: rgb(190 200 210 / 0.55); }
   .ach-tier-b { border-color: rgb(232 196 90 / 0.7); box-shadow: 0 0 0 1px rgb(232 196 90 / 0.25); }
 
+  /* Mode switch (Pomodoro / Timer) — segmented control */
+  .mode-btn { color: rgb(var(--muted)); }
+  .mode-btn.active {
+    background-color: rgb(var(--accent));
+    color: rgb(var(--accent-fg));
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+  }
+
   /* Achievement card — expandable when description overflows (markdown-style click to reveal) */
   .ach-card { transition: padding 0.2s ease; }
   .ach-expandable { cursor: pointer; }

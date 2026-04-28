@@ -16,6 +16,7 @@ const defaults: AppState = {
     theme: "retro-teal",
     notificationsEnabled: true,
     language: "en",
+    mode: "pomodoro",
   },
   progression: {
     xp: 0,

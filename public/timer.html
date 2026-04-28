@@ -41,6 +41,12 @@
   </div>
 
   <div class="flex flex-col items-center justify-center flex-1 pt-20">
+    <div id="modeSwitch" class="inline-flex bg-surface/30 border border-border/20 rounded-full p-1 mb-5 text-xs">
+      <button type="button" data-mode="pomodoro" data-i18n="timer.mode.pomodoro"
+        class="mode-btn px-4 py-1 rounded-full font-semibold transition"></button>
+      <button type="button" data-mode="timer" data-i18n="timer.mode.timer"
+        class="mode-btn px-4 py-1 rounded-full font-semibold transition"></button>
+    </div>
     <div class="flex flex-col items-center justify-center mb-6">
       <div id="timer" class="text-6xl font-mono tracking-tight text-fg">25:00</div>
     </div>

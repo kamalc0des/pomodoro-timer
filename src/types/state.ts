@@ -7,6 +7,8 @@ export interface Profile {
 
 export type Lang = "en" | "fr";
 
+export type AppMode = "pomodoro" | "timer";
+
 export interface Preferences {
   duration: number;
   breakDuration: number;
@@ -14,6 +16,8 @@ export interface Preferences {
   theme: string;
   notificationsEnabled: boolean;
   language: Lang;
+  /** "pomodoro" = full cycle/break flow with XP. "timer" = simple countdown. */
+  mode?: AppMode;
 }
 
 export interface AchievementLogEntry {

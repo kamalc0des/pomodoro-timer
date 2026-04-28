@@ -60,12 +60,13 @@ import type { AppState } from "../types/state.js";
   let cycles = state.preferences.cycles;
   const pseudo = state.profile.pseudo;
 
+  let mode: "pomodoro" | "timer" = state.preferences.mode === "timer" ? "timer" : "pomodoro";
   let currentCycle = 1;
   let isBreak = false;
   let timeLeft = duration * 60;
   let timerInterval: ReturnType<typeof setInterval> | null = null;
   let isRunning = false;
-  let sessionXp = 0; // accumulator for the current session's XP gain
+  let sessionXp = 0; // accumulator for the current session's XP gain (pomodoro mode only)
 
   const fmt = (n: number) => String(n).padStart(2, "0");
 
@@ -135,9 +136,13 @@ import type { AppState } from "../types/state.js";
     const sec = timeLeft % 60;
     timerEl!.textContent = `${fmt(min)}:${fmt(sec)}`;
     if (cycleInfo) {
-      const cycleLine = t("timer.cycle", { current: currentCycle, total: cycles });
-      const phase = isBreak ? t("timer.phase.break") : t("timer.phase.work");
-      cycleInfo.textContent = `${cycleLine} (${phase})`;
+      if (mode === "timer") {
+        cycleInfo.textContent = "";
+      } else {
+        const cycleLine = t("timer.cycle", { current: currentCycle, total: cycles });
+        const phase = isBreak ? t("timer.phase.break") : t("timer.phase.work");
+        cycleInfo.textContent = `${cycleLine} (${phase})`;
+      }
     }
     updateTitle();
   }
@@ -204,6 +209,17 @@ import type { AppState } from "../types/state.js";
 
       clearTimer();
       isRunning = false;
+
+      // Timer mode — simple countdown: beep + notif + auto-reset, no cycle/XP logic
+      if (mode === "timer") {
+        playSound();
+        notify(t("timer.simple.done.title"), t("timer.simple.done.body"));
+        timeLeft = duration * 60;
+        refreshStartPauseLabel();
+        updateDisplay();
+        updateTitle();
+        return;
+      }
 
       if (!isBreak) {
         const isLastWorkOfSession = currentCycle >= cycles;
@@ -330,6 +346,34 @@ import type { AppState } from "../types/state.js";
     refreshStartPauseLabel();
     updateDisplay();
     updateProgressionUI();
+  });
+
+  // Mode switch (Pomodoro / Timer)
+  const modeButtons = document.querySelectorAll<HTMLButtonElement>("#modeSwitch .mode-btn");
+  function refreshModeSwitch() {
+    modeButtons.forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.mode === mode);
+    });
+  }
+  refreshModeSwitch();
+  modeButtons.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const next = btn.dataset.mode === "timer" ? "timer" : "pomodoro";
+      if (mode === next) return;
+      mode = next;
+      // Reset timer state when switching modes
+      clearTimer();
+      isRunning = false;
+      isBreak = false;
+      currentCycle = 1;
+      timeLeft = duration * 60;
+      sessionXp = 0;
+      refreshModeSwitch();
+      refreshStartPauseLabel();
+      updateDisplay();
+      // Persist preference
+      state = await patchState({ preferences: { mode } });
+    });
   });
 
   refreshLangToggle();
