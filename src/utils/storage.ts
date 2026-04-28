@@ -1,5 +1,6 @@
 import type { AppState, Lang, StatePatch } from "../types/state.js";
 import { applyI18n, detectInitialLang, setLang } from "./i18n.js";
+import { installDevConsole } from "./devFixtures.js";
 
 let cache: AppState | null = null;
 
@@ -8,6 +9,7 @@ export async function loadState(force = false): Promise<AppState> {
     cache = await window.electronAPI.store.get();
     await migrateFromLocalStorageIfNeeded(cache);
     await ensureLanguage(cache);
+    installDevConsole();
   }
   setLang(cache.preferences.language);
   syncThemeToLocalStorage(cache.preferences.theme);

@@ -9,6 +9,7 @@ import {
 } from "../utils/progression.js";
 import { applyI18n, getLang, setLang, t } from "../utils/i18n.js";
 import { applyEnterAnimation, navigateWithExit } from "../utils/animations.js";
+import { showSessionEndModal } from "../utils/sessionEndModal.js";
 import type { AppState } from "../types/state.js";
 
 (async function initTimerPage() {
@@ -64,6 +65,7 @@ import type { AppState } from "../types/state.js";
   let timeLeft = duration * 60;
   let timerInterval: ReturnType<typeof setInterval> | null = null;
   let isRunning = false;
+  let sessionXp = 0; // accumulator for the current session's XP gain
 
   const fmt = (n: number) => String(n).padStart(2, "0");
 
@@ -72,9 +74,10 @@ import type { AppState } from "../types/state.js";
     window.electronAPI.notify(title, body);
   }
 
-  function playSound(file: string) {
-    const sound = new Audio(`sounds/${file}`);
-    void sound.play().catch((err) => console.error("play error:", err));
+  // Native OS beep — replaces previous custom WAV files.
+  // macOS plays the user's selected alert sound, Windows plays the default ding.
+  function playSound() {
+    window.electronAPI.beep();
   }
 
   function refreshLangToggle() {
@@ -88,7 +91,14 @@ import type { AppState } from "../types/state.js";
 
   function updateProgressionUI() {
     const info = getRankInfo(state.progression.xp);
-    if (rankLabel) rankLabel.textContent = `${info.rank.emoji} ${t(`rank.${info.rank.index}`)}`;
+    if (rankLabel) {
+      const labelText = t("timer.rank.label", {
+        n: info.rank.index + 1,
+        rank: t(`rank.${info.rank.index}`),
+      });
+      rankLabel.innerHTML = `<i data-lucide="${info.rank.lucideIcon}" class="w-3.5 h-3.5 inline-block align-middle"></i> <span class="align-middle">${labelText}</span>`;
+      window.lucide?.createIcons();
+    }
     if (xpBar) {
       xpBar.dataset.tooltip = info.next
         ? `${info.xpInRank} / ${info.xpForNext} XP`
@@ -142,25 +152,30 @@ import type { AppState } from "../types/state.js";
   async function recordPomodoro(isCycleEnd: boolean) {
     const result = applyPomodoroComplete(state, { isCycleEnd });
     state = await patchState(result.patch);
+    sessionXp += result.gained.xp;
     updateProgressionUI();
 
     if (result.gained.rankUp) {
-      showLevelUp(result.gained.toRank.index, result.gained.toRank.emoji);
+      showLevelUp(result.gained.toRank);
     } else if (result.gained.newAchievements.length > 0) {
       showAchievement(result.gained.newAchievements[0]);
     }
   }
 
-  function showLevelUp(rankIndex: number, emoji: string) {
+  function showLevelUp(rank: { index: number; emoji: string; name: string; lucideIcon: string }) {
     const overlay = byId<HTMLDivElement>("levelUpOverlay");
     const title = byId<HTMLDivElement>("levelUpTitle");
     const sub = byId<HTMLDivElement>("levelUpRank");
     if (!overlay || !title || !sub) return;
     title.textContent = t("timer.levelup");
-    sub.textContent = `${emoji} ${t(`rank.${rankIndex}`)}`;
+    sub.innerHTML = `<div class="flex flex-col items-center gap-2">
+      <i data-lucide="${rank.lucideIcon}" class="w-12 h-12"></i>
+      <span>${t(`rank.${rank.index}`)}</span>
+    </div>`;
+    window.lucide?.createIcons();
     overlay.classList.remove("hidden");
     overlay.classList.add("level-up-active");
-    playSound("start.wav");
+    playSound();
     setTimeout(() => {
       overlay.classList.add("hidden");
       overlay.classList.remove("level-up-active");
@@ -192,11 +207,43 @@ import type { AppState } from "../types/state.js";
 
       if (!isBreak) {
         const isLastWorkOfSession = currentCycle >= cycles;
+
+        if (isLastWorkOfSession) {
+          // Wait for recordPomodoro to update state.progression.xp before opening modal
+          void recordPomodoro(isLastWorkOfSession).then(() => {
+            playSound();
+            notify(
+              t("notif.done.title"),
+              t("notif.done.body", { n: cycles, name: pseudo }),
+            );
+            // Snapshot session XP, then reset accumulator for next session
+            const xpEarnedThisSession = sessionXp;
+            sessionXp = 0;
+            // Auto-reset internal state so the timer is ready for a fresh run
+            currentCycle = 1;
+            isBreak = false;
+            timeLeft = duration * 60;
+            isRunning = false;
+            refreshStartPauseLabel();
+            updateDisplay();
+            updateTitle();
+            // Reward modal with animated XP bar
+            void showSessionEndModal({
+              name: pseudo,
+              sessionXp: xpEarnedThisSession,
+              finalXp: state.progression.xp,
+            });
+          });
+          return;
+        }
+
+        // Not last cycle — record and start break in parallel
         void recordPomodoro(isLastWorkOfSession);
 
+        // Normal break flow (not last cycle)
         isBreak = true;
         timeLeft = Math.round(breakDuration * 60);
-        playSound("end.wav");
+        playSound();
         notify(
           t("notif.break.title"),
           t("notif.break.body", { name: pseudo, min: breakDuration }),
@@ -209,34 +256,21 @@ import type { AppState } from "../types/state.js";
           refreshStartPauseLabel();
         }, 1000);
       } else {
+        // Break ended → next work cycle
         isBreak = false;
         currentCycle++;
-
-        if (currentCycle > cycles) {
-          timeLeft = 0;
-          isRunning = false;
+        timeLeft = duration * 60;
+        playSound();
+        notify(
+          t("notif.back.title"),
+          t("notif.back.body", { current: currentCycle, total: cycles }),
+        );
+        setTimeout(() => {
+          updateDisplay();
+          startTimer();
+          isRunning = true;
           refreshStartPauseLabel();
-          playSound("end.wav");
-          notify(
-            t("notif.done.title"),
-            t("notif.done.body", { n: cycles, name: pseudo }),
-          );
-          updateTitle();
-          return;
-        } else {
-          timeLeft = duration * 60;
-          playSound("start.wav");
-          notify(
-            t("notif.back.title"),
-            t("notif.back.body", { current: currentCycle, total: cycles }),
-          );
-          setTimeout(() => {
-            updateDisplay();
-            startTimer();
-            isRunning = true;
-            refreshStartPauseLabel();
-          }, 1000);
-        }
+        }, 1000);
       }
     }, 1000);
 
@@ -251,13 +285,7 @@ import type { AppState } from "../types/state.js";
       refreshStartPauseLabel();
       updateTitle();
     } else {
-      if (currentCycle > cycles) {
-        currentCycle = 1;
-        isBreak = false;
-        timeLeft = duration * 60;
-        updateDisplay();
-      }
-      playSound("start.wav");
+      playSound();
       startTimer();
     }
   });
@@ -279,6 +307,19 @@ import type { AppState } from "../types/state.js";
 
   settingsBtn?.addEventListener("click", () => void navigateWithExit("settings.html"));
   profileBtn?.addEventListener("click", () => void navigateWithExit("profile.html"));
+
+  // External support link — open in default browser instead of replacing the Electron window
+  const supportLink = byId<HTMLAnchorElement>("supportLink");
+  supportLink?.addEventListener("click", (e) => {
+    e.preventDefault();
+    const opener = window.electronAPI?.openExternal;
+    if (opener) {
+      opener(supportLink.href);
+    } else {
+      // Fallback: preload not yet updated — restart Electron to enable
+      console.warn("[support] electronAPI.openExternal missing, restart Electron to pick up new preload");
+    }
+  });
 
   langToggle?.addEventListener("click", async () => {
     const next = getLang() === "en" ? "fr" : "en";

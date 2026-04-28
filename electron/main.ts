@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Notification } from "electron";
+import { app, BrowserWindow, ipcMain, Notification, shell } from "electron";
 import { join } from "path";
 import { getState, initFromOSLocale, updateState, resetState } from "./store";
 import type { StatePatch } from "../src/types/state";
@@ -61,6 +61,16 @@ ipcMain.on("navigate", (_event, page: string) => {
   if (mainWindow && page) {
     void mainWindow.loadFile(htmlPath(page));
   }
+});
+
+ipcMain.on("open-external", (_event, url: string) => {
+  if (typeof url === "string" && /^https?:\/\//i.test(url)) {
+    void shell.openExternal(url);
+  }
+});
+
+ipcMain.on("beep", () => {
+  shell.beep();
 });
 
 ipcMain.on("notify", (_event, title: string, body: string) => {

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html data-theme="retro-teal" lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Dev Sim — Pomodoro Minutor</title>
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="fonts/fonts.css">
+  <link rel="stylesheet" href="../dist/styles.css">
+</head>
+
+<body class="bg-bg text-fg min-h-screen flex flex-col px-6 py-6">
+
+  <div class="max-w-md mx-auto w-full">
+    <div class="flex items-center justify-between mb-2">
+      <h1 class="text-2xl font-bold font-display">🥷 Dev Sim Panel</h1>
+      <button id="closeBtn"
+        class="text-xs bg-surface/40 border border-border/20 px-3 py-1.5 rounded-md hover:bg-surface/60 transition">
+        ← Timer
+      </button>
+    </div>
+    <p class="text-xs text-muted mb-6">
+      Charge un état de progression simulé pour visualiser l'UI à chaque étape.
+      Tu peux aussi taper <code class="px-1 py-0.5 rounded bg-surface/40">__sim.help()</code> dans la console.
+    </p>
+
+    <div id="fixtureList" class="flex flex-col gap-2 mb-6"></div>
+
+    <button id="resetBtn"
+      class="w-full bg-red-600 text-white font-semibold py-2.5 px-4 rounded-lg shadow-md hover:bg-red-700 transition text-sm">
+      🗑 Reset complet (efface tout)
+    </button>
+
+    <p class="text-xs text-muted mt-4 text-center">
+      Après chargement, tu seras redirigé vers le profil pour voir les changements.
+    </p>
+  </div>
+
+  <script src="vendor/motion.min.js"></script>
+  <script type="module" src="../dist/src/renderer/dev.js"></script>
+</body>
+
+</html>

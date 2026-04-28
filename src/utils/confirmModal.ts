@@ -7,7 +7,8 @@ export interface ConfirmOptions {
   title: string;
   body?: string;
   confirmLabel: string;
-  cancelLabel: string;
+  /** When omitted, only the confirm button is shown (alert-style modal). */
+  cancelLabel?: string;
   destructive?: boolean;
 }
 
@@ -25,14 +26,18 @@ export function confirmDialog(opts: ConfirmOptions): Promise<boolean> {
       ? "bg-red-600 text-white hover:bg-red-700"
       : "bg-accent text-accentFg hover:opacity-90";
 
+    const cancelBtn = opts.cancelLabel
+      ? `<button type="button" data-action="cancel"
+          class="bg-surface/40 border border-border/20 text-fg font-semibold py-2 px-4 rounded-lg hover:bg-surface/60 transition text-sm">
+          ${escapeHtml(opts.cancelLabel)}
+        </button>`
+      : "";
+
     modal.innerHTML = `
       <h3 class="text-lg font-bold font-display text-fg mb-2">${escapeHtml(opts.title)}</h3>
       ${opts.body ? `<p class="text-sm text-muted mb-4">${escapeHtml(opts.body)}</p>` : ""}
       <div class="flex gap-2 justify-end">
-        <button type="button" data-action="cancel"
-          class="bg-surface/40 border border-border/20 text-fg font-semibold py-2 px-4 rounded-lg hover:bg-surface/60 transition text-sm">
-          ${escapeHtml(opts.cancelLabel)}
-        </button>
+        ${cancelBtn}
         <button type="button" data-action="confirm"
           class="${confirmClasses} font-semibold py-2 px-4 rounded-lg shadow-md transition text-sm">
           ${escapeHtml(opts.confirmLabel)}

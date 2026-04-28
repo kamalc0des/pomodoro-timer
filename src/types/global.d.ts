@@ -6,6 +6,8 @@ declare global {
   interface ElectronAPI {
     navigate: (path: string) => void;
     notify: (title: string, body: string) => void;
+    openExternal: (url: string) => void;
+    beep: () => void;
     store: {
       get: () => Promise<AppState>;
       update: (patch: StatePatch) => Promise<AppState>;
@@ -22,11 +24,14 @@ declare global {
   }
 
   interface MotionGlobal {
+    /**
+     * Motion One animate() — overloaded:
+     * - animate(target, keyframes, options) for DOM
+     * - animate(from, to, options) for numerical tweens (use options.onUpdate)
+     */
     animate: (
-      target: Element | Element[] | string,
-      keyframes: Record<string, unknown> | Record<string, unknown>[],
-      options?: Record<string, unknown>,
-    ) => { finished: Promise<void> };
+      ...args: unknown[]
+    ) => { finished: Promise<void>; cancel?: () => void };
     stagger: (delay: number, options?: { start?: number; from?: string | number }) => unknown;
   }
 
@@ -35,5 +40,6 @@ declare global {
     _electronApiDeclared?: boolean;
     lucide: LucideGlobal;
     Motion: MotionGlobal;
+    __sim?: import("../utils/devFixtures.js").DevSimAPI;
   }
 }

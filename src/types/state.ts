@@ -16,6 +16,12 @@ export interface Preferences {
   language: Lang;
 }
 
+export interface AchievementLogEntry {
+  id: string;
+  at: number; // unix ms timestamp
+  xp: number;
+}
+
 export interface Progression {
   xp: number;
   pomodorosCompleted: number;
@@ -23,6 +29,7 @@ export interface Progression {
   streakDays: number;
   lastSessionDate: string;
   achievements: string[];
+  achievementsLog?: AchievementLogEntry[];
   rankIndex: number;
 }
 
