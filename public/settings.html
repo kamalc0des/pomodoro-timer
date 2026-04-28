@@ -12,7 +12,7 @@
 <body class="bg-bg text-fg min-h-screen flex flex-col items-center justify-center px-4 py-4">
 
   <button id="langToggle"
-    class="fixed top-3 right-3 text-xs bg-surface/40 border border-border/20 px-2 py-1 rounded-md hover:bg-surface/60 transition z-40">
+    class="hidden fixed top-3 right-3 text-xs bg-surface/40 border border-border/20 px-2 py-1 rounded-md hover:bg-surface/60 transition z-40">
     EN / FR
   </button>
 
@@ -28,26 +28,22 @@
         <div class="grid grid-cols-2 gap-2 w-full">
           <button type="button" data-theme="naruto"
             class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
-            <span class="w-4 h-4 rounded-full flex-shrink-0"
-              style="background: linear-gradient(135deg, #f66c2d, #e7e419, #082c8c)"></span>
+            <img src="icons/themes/naruto.png" class="theme-portrait" alt="Naruto" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'w-7 h-7 rounded-full flex-shrink-0',style:'background: linear-gradient(135deg, #f66c2d, #e7e419, #082c8c)'}))">
             <span data-i18n="theme.naruto">Naruto</span>
           </button>
           <button type="button" data-theme="sasuke"
             class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
-            <span class="w-4 h-4 rounded-full flex-shrink-0"
-              style="background: linear-gradient(135deg, #13386c, #a7a7a9, #151313)"></span>
+            <img src="icons/themes/sasuke.png" class="theme-portrait" alt="Sasuke" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'w-7 h-7 rounded-full flex-shrink-0',style:'background: linear-gradient(135deg, #13386c, #a7a7a9, #151313)'}))">
             <span data-i18n="theme.sasuke">Sasuke</span>
           </button>
           <button type="button" data-theme="sakura"
             class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
-            <span class="w-4 h-4 rounded-full flex-shrink-0"
-              style="background: linear-gradient(135deg, #ebbabf, #88c59f, #871838)"></span>
+            <img src="icons/themes/sakura.png" class="theme-portrait" alt="Sakura" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'w-7 h-7 rounded-full flex-shrink-0',style:'background: linear-gradient(135deg, #ebbabf, #88c59f, #871838)'}))">
             <span data-i18n="theme.sakura">Sakura</span>
           </button>
           <button type="button" data-theme="kakashi"
             class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
-            <span class="w-4 h-4 rounded-full flex-shrink-0"
-              style="background: linear-gradient(135deg, #d6dbe4, #768379, #343c55)"></span>
+            <img src="icons/themes/kakashi.png" class="theme-portrait" alt="Kakashi" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'w-7 h-7 rounded-full flex-shrink-0',style:'background: linear-gradient(135deg, #d6dbe4, #768379, #343c55)'}))">
             <span data-i18n="theme.kakashi">Kakashi</span>
           </button>
         </div>
