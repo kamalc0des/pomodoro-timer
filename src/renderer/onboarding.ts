@@ -3,6 +3,7 @@ import { loadState, patchState } from "../utils/storage.js";
 import { RANKS } from "../utils/progression.js";
 import { applyI18n, getLang, setLang, t } from "../utils/i18n.js";
 import { mountRhythmPicker } from "../utils/rhythmPicker.js";
+import { applyEnterAnimation, navigateWithExit } from "../utils/animations.js";
 
 (async function initOnboarding() {
   if (!window._electronApiDeclared) window._electronApiDeclared = true;
@@ -211,7 +212,7 @@ import { mountRhythmPicker } from "../utils/rhythmPicker.js";
           notificationsEnabled: formData.notificationsEnabled,
         },
       });
-      window.electronAPI.navigate("timer.html");
+      void navigateWithExit("timer.html");
       return;
     }
 
@@ -231,6 +232,8 @@ import { mountRhythmPicker } from "../utils/rhythmPicker.js";
   });
 
   applyI18n();
+  window.lucide?.createIcons();
+  applyEnterAnimation();
   refreshLangToggle();
   renderRankList();
   showStep(0);

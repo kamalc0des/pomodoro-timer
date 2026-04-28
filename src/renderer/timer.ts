@@ -8,6 +8,7 @@ import {
   todayKey,
 } from "../utils/progression.js";
 import { applyI18n, getLang, setLang, t } from "../utils/i18n.js";
+import { applyEnterAnimation, navigateWithExit } from "../utils/animations.js";
 import type { AppState } from "../types/state.js";
 
 (async function initTimerPage() {
@@ -22,6 +23,8 @@ import type { AppState } from "../types/state.js";
 
   document.documentElement.dataset.theme = state.preferences.theme;
   applyI18n();
+  window.lucide?.createIcons();
+  applyEnterAnimation();
 
   const today = todayKey();
   const refreshedMission = ensureDailyMission(state, today);
@@ -43,7 +46,7 @@ import type { AppState } from "../types/state.js";
   const settingsBtn = byId<HTMLButtonElement>("settingsBtn");
   const profileBtn = byId<HTMLButtonElement>("profileBtn");
   const rankLabel = byId<HTMLSpanElement>("rankLabel");
-  const xpLabel = byId<HTMLSpanElement>("xpLabel");
+  const xpBar = byId<HTMLDivElement>("xpBar");
   const xpFill = byId<HTMLDivElement>("xpFill");
   const missionLabel = byId<HTMLDivElement>("missionLabel");
   const langToggle = byId<HTMLButtonElement>("langToggle");
@@ -86,8 +89,8 @@ import type { AppState } from "../types/state.js";
   function updateProgressionUI() {
     const info = getRankInfo(state.progression.xp);
     if (rankLabel) rankLabel.textContent = `${info.rank.emoji} ${t(`rank.${info.rank.index}`)}`;
-    if (xpLabel) {
-      xpLabel.textContent = info.next
+    if (xpBar) {
+      xpBar.dataset.tooltip = info.next
         ? `${info.xpInRank} / ${info.xpForNext} XP`
         : `${state.progression.xp} XP`;
     }
@@ -274,8 +277,8 @@ import type { AppState } from "../types/state.js";
     updateProgressionUI();
   });
 
-  settingsBtn?.addEventListener("click", () => window.electronAPI.navigate("settings.html"));
-  profileBtn?.addEventListener("click", () => window.electronAPI.navigate("profile.html"));
+  settingsBtn?.addEventListener("click", () => void navigateWithExit("settings.html"));
+  profileBtn?.addEventListener("click", () => void navigateWithExit("profile.html"));
 
   langToggle?.addEventListener("click", async () => {
     const next = getLang() === "en" ? "fr" : "en";

@@ -2,6 +2,8 @@ import { byId } from "../utils/dom.js";
 import { loadState, patchState, resetAppState } from "../utils/storage.js";
 import { applyI18n, getLang, setLang, t } from "../utils/i18n.js";
 import { mountRhythmPicker, type RhythmValues } from "../utils/rhythmPicker.js";
+import { applyEnterAnimation, navigateWithExit } from "../utils/animations.js";
+import { confirmDialog } from "../utils/confirmModal.js";
 
 (async function initSettingsPage() {
   if (!window._electronApiDeclared) window._electronApiDeclared = true;
@@ -10,6 +12,8 @@ import { mountRhythmPicker, type RhythmValues } from "../utils/rhythmPicker.js";
   const root = document.documentElement;
   root.dataset.theme = state.preferences.theme;
   applyI18n();
+  window.lucide?.createIcons();
+  applyEnterAnimation();
 
   const langToggle = byId<HTMLButtonElement>("langToggle");
   function refreshLangToggle() {
@@ -40,8 +44,16 @@ import { mountRhythmPicker, type RhythmValues } from "../utils/rhythmPicker.js";
 
   const resetBtn = byId<HTMLButtonElement>("resetAppBtnSettings");
   resetBtn?.addEventListener("click", async () => {
+    const ok = await confirmDialog({
+      title: t("confirm.delete.title"),
+      body: t("confirm.delete.body"),
+      confirmLabel: t("confirm.delete.confirm"),
+      cancelLabel: t("common.cancel"),
+      destructive: true,
+    });
+    if (!ok) return;
     await resetAppState();
-    window.electronAPI.navigate("onboarding.html");
+    void navigateWithExit("onboarding.html");
   });
 
   const notifToggle = byId<HTMLInputElement>("notificationsToggle");
@@ -106,11 +118,11 @@ import { mountRhythmPicker, type RhythmValues } from "../utils/rhythmPicker.js";
       text.style.opacity = "1";
     }
     await new Promise((res) => setTimeout(res, 1200));
-    window.electronAPI.navigate("timer.html");
+    void navigateWithExit("timer.html");
   });
 
   backBtn?.addEventListener("click", () => {
-    window.electronAPI.navigate("timer.html");
+    void navigateWithExit("timer.html");
   });
 
   langToggle?.addEventListener("click", async () => {

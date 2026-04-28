@@ -4,13 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <title>Profile</title>
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="../dist/styles.css">
 </head>
 
 <body class="bg-bg text-fg min-h-screen flex flex-col p-4">
 
   <div class="flex justify-between items-center mb-4">
-    <h2 class="text-xl font-bold" data-i18n="profile.title"></h2>
+    <h2 class="text-xl font-bold font-display" data-i18n="profile.title"></h2>
     <div class="flex gap-2 items-center">
       <button id="langToggle"
         class="text-xs bg-surface/40 border border-border/20 px-2 py-1 rounded-md hover:bg-surface/60 transition">
@@ -24,8 +26,8 @@
 
   <div class="flex flex-col items-center mb-6">
     <img id="profilePic" class="w-24 h-24 rounded-full border-2 border-accent shadow-lg mb-3" />
-    <h3 id="pseudoLabel" class="text-lg font-bold"></h3>
-    <div id="rankBadge" class="mt-2 px-4 py-1 rounded-full text-sm font-semibold"></div>
+    <h3 id="pseudoLabel" class="text-lg font-bold font-display"></h3>
+    <div id="rankBadge" class="mt-2 px-4 py-1 rounded-full text-sm font-semibold font-hero"></div>
   </div>
 
   <div class="w-full max-w-sm mx-auto mb-4">
@@ -55,15 +57,11 @@
   </div>
 
   <div class="max-w-sm mx-auto w-full mb-4">
-    <h4 class="text-sm font-semibold mb-2 text-muted" data-i18n="profile.mission.title"></h4>
-    <div id="missionCard" class="bg-surface/30 rounded-lg p-3 text-sm"></div>
-  </div>
-
-  <div class="max-w-sm mx-auto w-full mb-4">
     <h4 class="text-sm font-semibold mb-2 text-muted" data-i18n="profile.achievements.title"></h4>
     <div id="achievementsGrid" class="grid grid-cols-2 gap-2"></div>
   </div>
 
+  <script src="vendor/motion.min.js"></script>
   <script type="module" src="../dist/src/renderer/profile.js"></script>
 </body>
 

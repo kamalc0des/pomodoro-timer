@@ -12,11 +12,15 @@ const dict: Record<Lang, Record<string, string>> = {
     "common.cancel": "Cancel",
     "common.minutes": "min",
 
+    "confirm.delete.title": "Delete profile?",
+    "confirm.delete.body": "This will erase your pseudo, avatar, and all your progress. This action cannot be undone.",
+    "confirm.delete.confirm": "Delete",
+
     "index.welcome.back": "Welcome back, {name}!",
     "index.welcome.subtitle": "Ready to focus?",
     "index.welcome.new": "Welcome to Pomodoro Minutor!",
     "index.welcome.cta": "Create your profile to get started.",
-    "index.start": "Let's go 😎",
+    "index.start": "Let's go",
     "index.delete": "Delete my profile",
 
     "timer.start": "Start",
@@ -31,13 +35,13 @@ const dict: Record<Lang, Record<string, string>> = {
     "timer.levelup": "RANK UP!",
     "timer.achievement.unlocked": "🏆 Achievement unlocked: {label}",
 
-    "notif.break.title": "⏸ Break time!",
+    "notif.break.title": "Break time",
     "notif.break.body": "Good job {name}! Take a {min} min break.",
-    "notif.done.title": "🍅 Pomodoro done!",
+    "notif.done.title": "Pomodoro complete",
     "notif.done.body": "All {n} cycles completed. Well done {name}!",
-    "notif.back.title": "▶️ Back to work!",
+    "notif.back.title": "Back to work",
     "notif.back.body": "Cycle {current} / {total} — let's focus!",
-    "notif.test.title": "🍅 Notifications enabled!",
+    "notif.test.title": "Notifications enabled",
     "notif.test.body": "You'll get an alert at every transition.",
 
     "settings.title": "Settings",
@@ -52,6 +56,17 @@ const dict: Record<Lang, Record<string, string>> = {
     "settings.invalid": "Invalid values",
     "settings.go.back": "Go back",
     "settings.delete": "Delete my profile",
+
+    "footer.support": "Support me and visit my portfolio: @kamalcodes",
+
+    "theme.retro_teal": "Retro Teal",
+    "theme.coral_teal": "Coral Teal",
+    "theme.burgundy_gold": "Burgundy Gold",
+    "theme.slate_orange": "Slate Orange",
+    "theme.naruto": "Naruto",
+    "theme.sasuke": "Sasuke",
+    "theme.sakura": "Sakura",
+    "theme.kakashi": "Kakashi",
 
     "onboarding.welcome.title": "Welcome to Minutor",
     "onboarding.welcome.body": "Stay focused, level up like a ninja, unlock new ranks. Every pomodoro brings you closer to Kage.",
@@ -127,11 +142,15 @@ const dict: Record<Lang, Record<string, string>> = {
     "common.cancel": "Annuler",
     "common.minutes": "min",
 
+    "confirm.delete.title": "Supprimer le profil ?",
+    "confirm.delete.body": "Ton pseudo, ton avatar et toute ta progression seront effacés. Cette action est irréversible.",
+    "confirm.delete.confirm": "Supprimer",
+
     "index.welcome.back": "Bon retour, {name} !",
     "index.welcome.subtitle": "Prêt à te concentrer ?",
     "index.welcome.new": "Bienvenue dans Pomodoro Minutor !",
     "index.welcome.cta": "Crée ton profil pour démarrer.",
-    "index.start": "C'est parti 😎",
+    "index.start": "C'est parti",
     "index.delete": "Supprimer mon profil",
 
     "timer.start": "Démarrer",
@@ -146,13 +165,13 @@ const dict: Record<Lang, Record<string, string>> = {
     "timer.levelup": "RANG SUPÉRIEUR !",
     "timer.achievement.unlocked": "🏆 Achievement débloqué : {label}",
 
-    "notif.break.title": "⏸ C'est la pause !",
+    "notif.break.title": "C'est la pause",
     "notif.break.body": "Bien joué {name} ! Prends {min} min de pause.",
-    "notif.done.title": "🍅 Pomodoro terminé !",
+    "notif.done.title": "Pomodoro terminé",
     "notif.done.body": "Les {n} cycles sont terminés. Bravo {name} !",
-    "notif.back.title": "▶️ Au boulot !",
+    "notif.back.title": "Au boulot",
     "notif.back.body": "Cycle {current} / {total} — concentre-toi !",
-    "notif.test.title": "🍅 Notifications activées !",
+    "notif.test.title": "Notifications activées",
     "notif.test.body": "Tu recevras une alerte à chaque transition.",
 
     "settings.title": "Paramètres",
@@ -167,6 +186,17 @@ const dict: Record<Lang, Record<string, string>> = {
     "settings.invalid": "Valeurs invalides",
     "settings.go.back": "Retour",
     "settings.delete": "Supprimer mon profil",
+
+    "footer.support": "Soutiens-moi et visite mon portfolio : @kamalcodes",
+
+    "theme.retro_teal": "Rétro Teal",
+    "theme.coral_teal": "Coral Teal",
+    "theme.burgundy_gold": "Bordeaux Or",
+    "theme.slate_orange": "Slate Orange",
+    "theme.naruto": "Naruto",
+    "theme.sasuke": "Sasuke",
+    "theme.sakura": "Sakura",
+    "theme.kakashi": "Kakashi",
 
     "onboarding.welcome.title": "Bienvenue dans Minutor",
     "onboarding.welcome.body": "Reste concentré, progresse comme un ninja, débloque des rangs. Chaque pomodoro te rapproche du titre de Kage.",

@@ -2,58 +2,124 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-    --bg: 18 19 18;
-    --fg: 232 216 201;
-    --surface: 62 104 104;
-    --muted: 181 171 133;
-    --accent: 243 112 30;
-    --accent-fg: 18 19 18;
-    --border: 255 255 255;
+  /* Theme-aware page background — prevents white flash during body opacity transitions */
+  html { background-color: rgb(var(--bg)); }
+
+  /* Hide body initially; applyEnterAnimation reveals it (Motion or sync fallback) */
+  body { opacity: 0; }
+  body.no-anim { opacity: 1; }
+
+  /* Custom hover tooltip — usage: <el data-tooltip="text"> */
+  [data-tooltip] { position: relative; }
+  [data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%) translateY(2px);
+    padding: 4px 8px;
+    background: rgb(var(--surface));
+    color: #fff;
+    border: 1px solid rgb(var(--border) / 0.4);
+    border-radius: 6px;
+    font-size: 11px;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 60;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.25);
   }
-  
-  /* Theme 1 Retro Teal Orange Cream */
+  [data-tooltip]:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Default = Retro Teal (legacy theme — text white) */
+  :root,
   [data-theme="retro-teal"] {
-    --bg: 18 19 18;
-    --fg: 232 216 201;
-    --surface: 62 104 104;
-    --muted: 193 171 133;
-    --accent: 243 112 30;
-    --accent-fg: 18 19 18;
-    --border: 232 216 201;
+    --bg: 20 32 31;
+    --fg: 255 255 255;
+    --surface: 31 56 53;
+    --muted: 175 190 188;
+    --accent: 255 107 31;
+    --accent-fg: 20 32 31;
+    --border: 42 79 74;
   }
-  
-  /* Theme 2 Teal Coral Sand */
+
   [data-theme="coral-teal"] {
-    --bg: 16 18 20;
-    --fg: 236 227 214;
-    --surface: 19 72 87;
-    --muted: 200 184 155;
-    --accent: 201 78 68;
-    --accent-fg: 16 18 20;
-    --border: 236 227 214;
+    --bg: 14 27 31;
+    --fg: 255 255 255;
+    --surface: 22 65 74;
+    --muted: 161 178 186;
+    --accent: 229 97 79;
+    --accent-fg: 14 27 31;
+    --border: 31 90 102;
   }
-  
-  /* Theme 3 Burgundy Teal Gold */
+
   [data-theme="burgundy-gold"] {
-    --bg: 10 10 12;
-    --fg: 238 224 204;
-    --surface: 19 72 87;
-    --muted: 207 183 135;
-    --accent: 129 2 31;
-    --accent-fg: 238 224 204;
-    --border: 207 183 135;
+    --bg: 13 10 14;
+    --fg: 255 255 255;
+    --surface: 31 20 26;
+    --muted: 188 173 145;
+    --accent: 177 37 69;
+    --accent-fg: 255 255 255;
+    --border: 74 51 31;
   }
-  
-  /* Theme 4 Slate Blue Orange */
+
   [data-theme="slate-orange"] {
-    --bg: 12 17 28;
-    --fg: 232 216 201;
-    --surface: 75 96 127;
-    --muted: 193 171 133;
-    --accent: 243 112 30;
-    --accent-fg: 12 17 28;
-    --border: 232 216 201;
+    --bg: 14 20 34;
+    --fg: 255 255 255;
+    --surface: 31 42 63;
+    --muted: 165 182 211;
+    --accent: 243 123 34;
+    --accent-fg: 14 20 34;
+    --border: 47 65 89;
+  }
+
+  [data-theme="naruto"] {
+    /* Naruto — full palette: Tuna, Tangelo, Funky Yellow, Arabian Silver, Smurf, Dark Sea Blue */
+    --bg: 4 10 31;            /* derived from Dark Sea Blue, deepened */
+    --fg: 255 255 255;        /* white text for max readability */
+    --surface: 54 54 65;      /* Tuna */
+    --muted: 130 175 220;     /* lifted Smurf for visibility */
+    --accent: 246 108 45;     /* Vivid Tangelo */
+    --accent-fg: 8 44 140;    /* Dark Sea Blue */
+    --border: 231 228 25;     /* Funky Yellow */
+  }
+
+  [data-theme="sasuke"] {
+    /* Sasuke — full palette: Sport Black, Vintage Dark Blue, Authentic Silver, Mya */
+    --bg: 21 19 19;           /* Sport Black */
+    --fg: 255 255 255;        /* white */
+    --surface: 41 50 65;      /* Vintage Dark Blue */
+    --muted: 198 198 200;     /* brightened Authentic Silver */
+    --accent: 19 56 108;      /* Mya — Sharingan blue */
+    --accent-fg: 255 255 255; /* white text on Mya */
+    --border: 60 75 100;      /* lifted Vintage Dark Blue */
+  }
+
+  [data-theme="sakura"] {
+    /* Sakura — full palette: Tsunami, Casual Green, Snow White, Pastel Pink, Claret */
+    --bg: 26 8 16;            /* derived deep cherry-black */
+    --fg: 255 255 255;        /* white */
+    --surface: 18 53 95;      /* Tsunami */
+    --muted: 170 220 188;     /* lifted Casual Green */
+    --accent: 235 186 191;    /* Trendy Pastel Pink */
+    --accent-fg: 26 8 16;     /* dark cherry on pastel pink */
+    --border: 135 24 56;      /* Claret */
+  }
+
+  [data-theme="kakashi"] {
+    /* Kakashi — full palette: Muted Black, Vintage Blue, Royal Pastel Blue, Glossy Aluminium, Xanadu, Carbon Steel */
+    --bg: 29 29 29;           /* Muted Black */
+    --fg: 255 255 255;        /* white */
+    --surface: 52 60 85;      /* Vintage Blue */
+    --muted: 168 178 168;     /* lifted Xanadu */
+    --accent: 197 200 199;    /* Glossy Aluminium */
+    --accent-fg: 29 29 29;    /* Muted Black on alu */
+    --border: 87 99 96;       /* Carbon Steel */
   }
 
   @keyframes level-up-pop {
