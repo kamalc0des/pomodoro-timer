@@ -9,6 +9,24 @@
   body { opacity: 0; }
   body.no-anim { opacity: 1; }
 
+  /* Global cursor: pointer on all interactive elements (Tailwind cursor-* still overrides) */
+  button:not(:disabled),
+  a[href],
+  [role="button"]:not(:disabled),
+  label[for],
+  summary {
+    cursor: pointer;
+  }
+  button:disabled,
+  [role="button"][aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+  /* Native file input "Choose file" button (pseudo-element) */
+  input[type="file"]::file-selector-button,
+  input[type="file"]::-webkit-file-upload-button {
+    cursor: pointer;
+  }
+
   /* Custom hover tooltip — usage: <el data-tooltip="text"> */
   [data-tooltip] { position: relative; }
   [data-tooltip]::after {

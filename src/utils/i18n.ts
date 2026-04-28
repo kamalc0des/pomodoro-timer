@@ -91,6 +91,9 @@ const dict: Record<Lang, Record<string, string>> = {
     "onboarding.cta.final": "Become a ninja 🥷",
 
     "profile.title": "Profile",
+    "profile.edit": "Edit profile",
+    "profile.edit.title": "Edit profile",
+    "profile.edit.saved": "Profile updated",
     "profile.stat.pomodoros": "pomodoros",
     "profile.stat.minutes": "min focus",
     "profile.stat.streak": "day streak",
@@ -221,6 +224,9 @@ const dict: Record<Lang, Record<string, string>> = {
     "onboarding.cta.final": "Devenir ninja 🥷",
 
     "profile.title": "Profil",
+    "profile.edit": "Modifier le profil",
+    "profile.edit.title": "Modifier le profil",
+    "profile.edit.saved": "Profil mis à jour",
     "profile.stat.pomodoros": "pomodoros",
     "profile.stat.minutes": "min focus",
     "profile.stat.streak": "jours de suite",
