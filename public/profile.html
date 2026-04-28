@@ -15,7 +15,7 @@
     <h2 class="text-xl font-bold font-display" data-i18n="profile.title"></h2>
     <div class="flex gap-2 items-center">
       <button id="langToggle"
-        class="text-xs bg-surface/40 border border-border/20 px-2 py-1 rounded-md hover:bg-surface/60 transition">
+        class="hidden text-xs bg-surface/40 border border-border/20 px-2 py-1 rounded-md hover:bg-surface/60 transition">
         EN / FR
       </button>
       <button id="backBtn" data-i18n="common.back"
@@ -25,9 +25,37 @@
   </div>
 
   <div class="flex flex-col items-center mb-6">
-    <img id="profilePic" class="w-24 h-24 rounded-full border-2 border-accent shadow-lg mb-3" />
+    <div class="relative">
+      <img id="profilePic" class="w-24 h-24 rounded-full border-2 border-accent shadow-lg mb-3" />
+      <button type="button" id="editProfileBtn"
+        class="absolute bottom-3 right-0 bg-accent text-accentFg w-7 h-7 rounded-full shadow-md flex items-center justify-center hover:opacity-90 transition cursor-pointer">
+        <i data-lucide="pencil" class="w-4 h-4"></i>
+      </button>
+    </div>
     <h3 id="pseudoLabel" class="text-lg font-bold font-display"></h3>
     <div id="rankBadge" class="mt-2 px-4 py-1 rounded-full text-sm font-semibold font-hero"></div>
+  </div>
+
+  <div id="editProfilePanel" class="hidden max-w-sm mx-auto w-full mb-6 bg-surface/30 border border-border/20 rounded-lg p-4">
+    <h4 class="text-sm font-semibold mb-3 font-display" data-i18n="profile.edit.title"></h4>
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-3">
+        <img id="editAvatarPreview" class="w-14 h-14 rounded-full border border-border/30" />
+        <input type="file" id="editAvatarInput" accept="image/*"
+          class="text-sm text-muted file:bg-surface/40 file:border-0 file:rounded-md file:text-fg file:px-3 file:py-1 file:mr-3" />
+      </div>
+      <input type="text" id="editPseudoInput" data-i18n-placeholder="onboarding.identity.pseudo"
+        class="bg-bg/40 border border-border/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/60 text-fg placeholder:text-muted" />
+      <div id="editError" class="text-xs text-red-400 h-4"></div>
+      <div class="flex gap-2">
+        <button type="button" id="editCancelBtn" data-i18n="common.cancel"
+          class="flex-1 bg-surface/40 border border-border/20 text-fg font-semibold py-2 px-4 rounded-lg hover:bg-surface/60 transition text-sm">
+        </button>
+        <button type="button" id="editSaveBtn" data-i18n="common.save"
+          class="flex-1 bg-accent text-accentFg font-semibold py-2 px-4 rounded-lg shadow-md hover:opacity-90 transition text-sm">
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="w-full max-w-sm mx-auto mb-4">
@@ -61,6 +89,12 @@
     <div id="achievementsGrid" class="grid grid-cols-2 gap-2"></div>
   </div>
 
+  <div class="max-w-sm mx-auto w-full mb-4">
+    <h4 class="text-sm font-semibold mb-2 text-muted" data-i18n="profile.journal.title"></h4>
+    <div id="rewardsJournal" class="flex flex-col gap-2"></div>
+  </div>
+
+  <script src="vendor/lucide.min.js"></script>
   <script src="vendor/motion.min.js"></script>
   <script type="module" src="../dist/src/renderer/profile.js"></script>
 </body>

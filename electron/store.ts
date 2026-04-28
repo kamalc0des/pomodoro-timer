@@ -24,6 +24,7 @@ const defaults: AppState = {
     streakDays: 0,
     lastSessionDate: "",
     achievements: [],
+    achievementsLog: [],
     rankIndex: 0,
   },
   dailyMission: {
