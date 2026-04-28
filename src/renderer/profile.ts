@@ -2,6 +2,7 @@ import { byId } from "../utils/dom.js";
 import { loadState, patchState } from "../utils/storage.js";
 import { ACHIEVEMENTS, getRankInfo } from "../utils/progression.js";
 import { applyI18n, getLang, setLang, t } from "../utils/i18n.js";
+import { applyEnterAnimation, navigateWithExit } from "../utils/animations.js";
 
 (async function initProfilePage() {
   if (!window._electronApiDeclared) window._electronApiDeclared = true;
@@ -9,6 +10,7 @@ import { applyI18n, getLang, setLang, t } from "../utils/i18n.js";
   let state = await loadState();
   document.documentElement.dataset.theme = state.preferences.theme;
   applyI18n();
+  applyEnterAnimation();
 
   const profilePic = byId<HTMLImageElement>("profilePic");
   const pseudoLabel = byId<HTMLHeadingElement>("pseudoLabel");
@@ -89,7 +91,7 @@ import { applyI18n, getLang, setLang, t } from "../utils/i18n.js";
   render();
   refreshLangToggle();
 
-  backBtn?.addEventListener("click", () => window.electronAPI.navigate("timer.html"));
+  backBtn?.addEventListener("click", () => void navigateWithExit("timer.html"));
 
   langToggle?.addEventListener("click", async () => {
     const next = getLang() === "en" ? "fr" : "en";

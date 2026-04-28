@@ -1,6 +1,8 @@
 import { byId } from "../utils/dom.js";
 import { loadState, patchState, resetAppState } from "../utils/storage.js";
 import { applyI18n, getLang, t } from "../utils/i18n.js";
+import { applyEnterAnimation, navigateWithExit } from "../utils/animations.js";
+import { confirmDialog } from "../utils/confirmModal.js";
 
 (async function initIndexPage() {
   if (!window._electronApiDeclared) window._electronApiDeclared = true;
@@ -14,6 +16,7 @@ import { applyI18n, getLang, t } from "../utils/i18n.js";
 
   document.documentElement.dataset.theme = state.preferences.theme;
   applyI18n();
+  applyEnterAnimation();
 
   const startBtn = byId<HTMLButtonElement>("startBtn");
   const resetAppBtn = byId<HTMLButtonElement>("resetAppBtn");
@@ -26,7 +29,7 @@ import { applyI18n, getLang, t } from "../utils/i18n.js";
     if (!welcomeDiv) return;
     welcomeDiv.innerHTML = `
       <img src="${state.profile.avatar}" class="w-20 h-20 rounded-full mb-3 shadow-lg border-2 border-accent" alt="Avatar" />
-      <h2 class="text-xl font-bold">${t("index.welcome.back", { name: state.profile.pseudo })}</h2>
+      <h2 class="text-xl font-bold font-display">${t("index.welcome.back", { name: state.profile.pseudo })}</h2>
       <p class="text-sm text-muted mt-1">${t("index.welcome.subtitle")}</p>
     `;
   }
@@ -43,12 +46,20 @@ import { applyI18n, getLang, t } from "../utils/i18n.js";
 
   startBtn.addEventListener("click", () => {
     startBtn.textContent = t("common.loading");
-    window.electronAPI.navigate("timer.html");
+    void navigateWithExit("timer.html");
   });
 
   resetAppBtn.addEventListener("click", async () => {
+    const ok = await confirmDialog({
+      title: t("confirm.delete.title"),
+      body: t("confirm.delete.body"),
+      confirmLabel: t("confirm.delete.confirm"),
+      cancelLabel: t("common.cancel"),
+      destructive: true,
+    });
+    if (!ok) return;
     await resetAppState();
-    window.electronAPI.navigate("onboarding.html");
+    void navigateWithExit("onboarding.html");
   });
 
   langToggle?.addEventListener("click", async () => {

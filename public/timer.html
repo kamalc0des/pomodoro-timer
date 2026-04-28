@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Timer Pomodoro</title>
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="../dist/styles.css">
 </head>
 
@@ -15,6 +17,11 @@
       <div>
         <h2 id="userInfo" class="text-sm font-semibold text-fg"></h2>
         <span id="rankLabel" class="text-xs text-muted"></span>
+        <div id="xpBar" class="mt-1 w-32 py-1 cursor-default" data-tooltip="">
+          <div class="w-32 h-1 bg-surface/40 rounded-full overflow-hidden">
+            <div id="xpFill" class="h-full transition-all duration-500 rounded-full" style="width: 0%"></div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="flex gap-2 items-center">
@@ -23,12 +30,12 @@
         EN / FR
       </button>
       <button id="profileBtn"
-        class="bg-bg/40 border border-border/20 text-xl font-semibold py-2.5 px-3 rounded-lg shadow-md hover:bg-bg/60 transition">
-        🧬
+        class="bg-bg/40 border border-border/20 font-semibold py-2.5 px-3 rounded-lg shadow-md hover:bg-bg/60 transition flex items-center justify-center">
+        <i data-lucide="user-round" class="w-5 h-5"></i>
       </button>
       <button id="settingsBtn"
-        class="bg-bg/40 border border-border/20 text-xl font-semibold py-2.5 px-3 rounded-lg shadow-md hover:bg-bg/60 transition">
-        ⚙️
+        class="bg-bg/40 border border-border/20 font-semibold py-2.5 px-3 rounded-lg shadow-md hover:bg-bg/60 transition flex items-center justify-center">
+        <i data-lucide="settings" class="w-5 h-5"></i>
       </button>
     </div>
   </div>
@@ -36,46 +43,38 @@
   <div class="flex flex-col items-center justify-center flex-1 pt-20">
     <div class="flex flex-col items-center justify-center mb-6">
       <div id="timer" class="text-6xl font-mono tracking-tight text-fg">25:00</div>
-      <div id="cycleInfo" class="text-xs text-muted"></div>
     </div>
 
-    <div class="w-full max-w-xs mb-4">
-      <div class="flex justify-between text-xs text-muted mb-1">
-        <span data-i18n="timer.xp">XP</span>
-        <span id="xpLabel"></span>
-      </div>
-      <div class="w-full h-2 bg-surface/30 rounded-full overflow-hidden">
-        <div id="xpFill" class="h-full transition-all duration-500 rounded-full" style="width: 0%"></div>
-      </div>
-      <div id="missionLabel" class="text-xs text-muted mt-2 text-center"></div>
-    </div>
-
-    <div class="flex flex-wrap gap-3 justify-center">
-      <button id="startPauseBtn"
+    <div class="flex flex-wrap gap-3 justify-center mb-3">
+      <button id="startPauseBtn" data-i18n="timer.start"
         class="bg-accent text-accentFg font-semibold py-2.5 px-6 rounded-lg shadow-md hover:opacity-90 transition">
       </button>
       <button id="resetBtn" data-i18n="timer.reset"
         class="bg-surface/40 border border-border/20 text-fg font-semibold py-2.5 px-6 rounded-lg shadow-md hover:bg-surface/55 transition">
       </button>
     </div>
+
+    <div id="cycleInfo" class="text-xs text-muted text-center"></div>
   </div>
 
   <footer class="mt-auto flex justify-center pb-3">
     <a class="text-xs text-muted hover:text-accent transition-colors duration-200 cursor-pointer"
-      href="https://kamalcodes.dev">
+      href="https://kamalcodes.dev" data-i18n="footer.support">
       Support me and visit my portfolio: @kamalcodes</a>
   </footer>
 
   <div id="levelUpOverlay"
     class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center bg-bg/95 backdrop-blur-sm">
-    <div id="levelUpTitle" class="text-3xl font-extrabold text-accent tracking-widest level-up-title"></div>
-    <div id="levelUpRank" class="text-5xl font-bold mt-4 level-up-rank"></div>
+    <div id="levelUpTitle" class="text-3xl font-extrabold font-hero text-accent tracking-widest level-up-title"></div>
+    <div id="levelUpRank" class="text-5xl font-bold font-hero mt-4 level-up-rank"></div>
   </div>
 
   <div id="achievementToast"
     class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-surface border border-accent/40 text-fg px-4 py-2 rounded-lg shadow-xl text-sm z-40">
   </div>
 
+  <script src="vendor/lucide.min.js"></script>
+  <script src="vendor/motion.min.js"></script>
   <script type="module" src="../dist/src/renderer/timer.js"></script>
 </body>
 

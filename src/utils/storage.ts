@@ -10,6 +10,7 @@ export async function loadState(force = false): Promise<AppState> {
     await ensureLanguage(cache);
   }
   setLang(cache.preferences.language);
+  syncThemeToLocalStorage(cache.preferences.theme);
   return cache;
 }
 
@@ -19,7 +20,18 @@ export async function patchState(patch: StatePatch): Promise<AppState> {
     setLang(cache.preferences.language);
     applyI18n();
   }
+  if (patch.preferences?.theme) {
+    syncThemeToLocalStorage(patch.preferences.theme);
+  }
   return cache;
+}
+
+function syncThemeToLocalStorage(theme: string): void {
+  try {
+    localStorage.setItem("theme", theme);
+  } catch {
+    /* localStorage unavailable */
+  }
 }
 
 export async function resetAppState(): Promise<AppState> {

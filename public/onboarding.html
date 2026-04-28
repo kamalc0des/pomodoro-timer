@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Welcome</title>
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="../dist/styles.css">
 </head>
 
@@ -20,12 +22,12 @@
 
     <section data-step="0" class="step w-full text-center hidden">
       <div class="text-7xl mb-4">🍅</div>
-      <h1 class="text-2xl font-bold mb-2" data-i18n="onboarding.welcome.title">Welcome to Minutor</h1>
+      <h1 class="text-2xl font-bold font-display mb-2" data-i18n="onboarding.welcome.title">Welcome to Minutor</h1>
       <p class="text-sm text-muted mb-8" data-i18n="onboarding.welcome.body"></p>
     </section>
 
     <section data-step="1" class="step w-full hidden">
-      <h2 class="text-xl font-bold mb-1 text-center" data-i18n="onboarding.identity.title"></h2>
+      <h2 class="text-xl font-bold font-display mb-1 text-center" data-i18n="onboarding.identity.title"></h2>
       <p class="text-sm text-muted mb-6 text-center" data-i18n="onboarding.identity.subtitle"></p>
       <div class="flex flex-col items-center gap-3">
         <img id="avatarPreview" class="w-24 h-24 rounded-full border-2 border-accent shadow-lg bg-surface/30" />
@@ -38,13 +40,15 @@
     </section>
 
     <section data-step="2" class="step w-full hidden">
-      <h2 class="text-xl font-bold mb-1 text-center" data-i18n="onboarding.rhythm.title"></h2>
+      <h2 class="text-xl font-bold font-display mb-1 text-center" data-i18n="onboarding.rhythm.title"></h2>
       <p class="text-sm text-muted mb-6 text-center" data-i18n="onboarding.rhythm.subtitle"></p>
       <div class="flex flex-col gap-4 rhythm-picker"></div>
     </section>
 
     <section data-step="3" class="step w-full hidden text-center">
-      <div class="text-5xl mb-3">🔔</div>
+      <div class="mb-3 flex justify-center text-accent">
+        <i data-lucide="bell" class="w-12 h-12"></i>
+      </div>
       <h2 class="text-xl font-bold mb-1" data-i18n="onboarding.notif.title"></h2>
       <p class="text-sm text-muted mb-6" data-i18n="onboarding.notif.body"></p>
       <div class="flex flex-col gap-3">
@@ -59,41 +63,41 @@
     </section>
 
     <section data-step="4" class="step w-full hidden">
-      <h2 class="text-xl font-bold mb-1 text-center" data-i18n="onboarding.theme.title"></h2>
+      <h2 class="text-xl font-bold font-display mb-1 text-center" data-i18n="onboarding.theme.title"></h2>
       <p class="text-sm text-muted mb-6 text-center" data-i18n="onboarding.theme.subtitle"></p>
       <div class="grid grid-cols-2 gap-2 w-full">
-        <button type="button" data-theme="retro-teal"
+        <button type="button" data-theme="naruto"
           class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
-          <span class="w-4 h-4 rounded-full" style="background: linear-gradient(135deg, #2dd4bf, #0f766e)"></span>
-          Retro Teal
+          <span class="w-4 h-4 rounded-full" style="background: linear-gradient(135deg, #f66c2d, #e7e419, #082c8c)"></span>
+          <span data-i18n="theme.naruto">Naruto</span>
         </button>
-        <button type="button" data-theme="coral-teal"
+        <button type="button" data-theme="sasuke"
           class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
-          <span class="w-4 h-4 rounded-full" style="background: linear-gradient(135deg, #fb7185, #2dd4bf)"></span>
-          Coral Teal
+          <span class="w-4 h-4 rounded-full" style="background: linear-gradient(135deg, #13386c, #a7a7a9, #151313)"></span>
+          <span data-i18n="theme.sasuke">Sasuke</span>
         </button>
-        <button type="button" data-theme="burgundy-gold"
+        <button type="button" data-theme="sakura"
           class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
-          <span class="w-4 h-4 rounded-full" style="background: linear-gradient(135deg, #9f1239, #ca8a04)"></span>
-          Burgundy Gold
+          <span class="w-4 h-4 rounded-full" style="background: linear-gradient(135deg, #ebbabf, #88c59f, #871838)"></span>
+          <span data-i18n="theme.sakura">Sakura</span>
         </button>
-        <button type="button" data-theme="slate-orange"
+        <button type="button" data-theme="kakashi"
           class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
-          <span class="w-4 h-4 rounded-full" style="background: linear-gradient(135deg, #475569, #ea580c)"></span>
-          Slate Orange
+          <span class="w-4 h-4 rounded-full" style="background: linear-gradient(135deg, #d6dbe4, #768379, #343c55)"></span>
+          <span data-i18n="theme.kakashi">Kakashi</span>
         </button>
       </div>
     </section>
 
     <section data-step="5" class="step w-full hidden">
-      <h2 class="text-xl font-bold mb-1 text-center" data-i18n="onboarding.rpg.title"></h2>
+      <h2 class="text-xl font-bold font-display mb-1 text-center" data-i18n="onboarding.rpg.title"></h2>
       <p class="text-sm text-muted mb-6 text-center" data-i18n="onboarding.rpg.body"></p>
       <div id="rankList" class="flex flex-col gap-1 text-sm"></div>
     </section>
 
     <section data-step="6" class="step w-full hidden text-center">
       <div class="text-7xl mb-4">🥷</div>
-      <h2 class="text-2xl font-bold mb-2" id="readyTitle"></h2>
+      <h2 class="text-2xl font-bold font-hero mb-2" id="readyTitle"></h2>
       <p class="text-sm text-muted mb-6" data-i18n="onboarding.ready.body"></p>
     </section>
 
@@ -108,6 +112,8 @@
     </button>
   </div>
 
+  <script src="vendor/lucide.min.js"></script>
+  <script src="vendor/motion.min.js"></script>
   <script type="module" src="../dist/src/renderer/onboarding.js"></script>
 </body>
 

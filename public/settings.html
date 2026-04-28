@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Settings</title>
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="../dist/styles.css">
 </head>
 
@@ -15,7 +17,7 @@
   </button>
 
   <div id="pageContent" class="flex flex-col items-center w-full max-w-sm">
-    <h2 class="text-2xl font-bold mb-6 text-fg" data-i18n="settings.title">Settings</h2>
+    <h2 class="text-2xl font-bold font-display mb-6 text-fg" data-i18n="settings.title">Settings</h2>
 
     <form id="settingsForm" class="flex flex-col gap-4 w-full">
 
@@ -24,29 +26,29 @@
       <div class="flex flex-col gap-1">
         <span class="text-xs text-muted" data-i18n="settings.theme"></span>
         <div class="grid grid-cols-2 gap-2 w-full">
-          <button type="button" data-theme="retro-teal"
+          <button type="button" data-theme="naruto"
             class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
             <span class="w-4 h-4 rounded-full flex-shrink-0"
-              style="background: linear-gradient(135deg, #2dd4bf, #0f766e)"></span>
-            Retro Teal
+              style="background: linear-gradient(135deg, #f66c2d, #e7e419, #082c8c)"></span>
+            <span data-i18n="theme.naruto">Naruto</span>
           </button>
-          <button type="button" data-theme="coral-teal"
+          <button type="button" data-theme="sasuke"
             class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
             <span class="w-4 h-4 rounded-full flex-shrink-0"
-              style="background: linear-gradient(135deg, #fb7185, #2dd4bf)"></span>
-            Coral Teal
+              style="background: linear-gradient(135deg, #13386c, #a7a7a9, #151313)"></span>
+            <span data-i18n="theme.sasuke">Sasuke</span>
           </button>
-          <button type="button" data-theme="burgundy-gold"
+          <button type="button" data-theme="sakura"
             class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
             <span class="w-4 h-4 rounded-full flex-shrink-0"
-              style="background: linear-gradient(135deg, #9f1239, #ca8a04)"></span>
-            Burgundy Gold
+              style="background: linear-gradient(135deg, #ebbabf, #88c59f, #871838)"></span>
+            <span data-i18n="theme.sakura">Sakura</span>
           </button>
-          <button type="button" data-theme="slate-orange"
+          <button type="button" data-theme="kakashi"
             class="theme-btn flex items-center gap-2 px-3 py-2 rounded-lg border border-border/20 bg-surface/20 hover:bg-surface/40 transition text-sm font-medium">
             <span class="w-4 h-4 rounded-full flex-shrink-0"
-              style="background: linear-gradient(135deg, #475569, #ea580c)"></span>
-            Slate Orange
+              style="background: linear-gradient(135deg, #d6dbe4, #768379, #343c55)"></span>
+            <span data-i18n="theme.kakashi">Kakashi</span>
           </button>
         </div>
       </div>
@@ -75,10 +77,14 @@
 
   <div id="savedOverlay" class="fixed inset-0 flex flex-col items-center justify-center bg-bg z-50"
     style="opacity: 0; pointer-events: none;">
-    <div id="savedIcon" class="text-5xl mb-4" style="transform: scale(0)">✅</div>
-    <p class="text-xl font-bold text-accent" style="opacity: 0" id="savedText" data-i18n="settings.saved"></p>
+    <div id="savedIcon" class="mb-4 text-accent" style="transform: scale(0)">
+      <i data-lucide="check-circle-2" class="w-16 h-16"></i>
+    </div>
+    <p class="text-xl font-bold font-display text-accent" style="opacity: 0" id="savedText" data-i18n="settings.saved"></p>
   </div>
 
+  <script src="vendor/lucide.min.js"></script>
+  <script src="vendor/motion.min.js"></script>
   <script type="module" src="../dist/src/renderer/settings.js"></script>
 </body>
 

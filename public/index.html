@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Pomodoro</title>
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="../dist/styles.css">
 </head>
 
@@ -19,7 +21,7 @@
   <button id="startBtn"
     class="w-full max-w-xs bg-accent text-accentFg font-semibold py-3 px-6 rounded-xl shadow-md hover:opacity-90 transition text-base mb-3"
     data-i18n="index.start">
-    Let's go 😎
+    Let's go
   </button>
 
   <button id="resetAppBtn"
@@ -28,6 +30,7 @@
     Delete my profile
   </button>
 
+  <script src="vendor/motion.min.js"></script>
   <script type="module" src="../dist/src/renderer/index.js"></script>
 </body>
 
